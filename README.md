@@ -22,19 +22,23 @@ The Faces Platform compiles source texts — documents, interviews, YouTube talk
 
 Paste the following into the chat with your agent:
 
-### Claude Code
+Use this for **Claude Code**:
 
-> Install Faces skill:
-> 1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces
-> 2. list the available skills: /faces, /face, /team, /manyface
-> 3. set me up to use faces: ask if I have an account, else help me get one
+```
+Install Faces skill:
+1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces
+2. list the available skills: /faces, /face, /team, /manyface
+3. set me up to use faces: ask if I have an account, else help me get one
+```
 
-### OpenClaw
+Use this for **OpenClaw**:
 
-> Please install Faces:
-    1. clawhub install faces
-    2. run QUICKSTART.md exactly
-    3. tell me how to use it
+```
+Please install Faces:
+1. clawhub install faces
+2. run QUICKSTART.md exactly
+3. tell me how to use it
+```
 
 ## Manual Install
 
