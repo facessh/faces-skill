@@ -100,10 +100,12 @@ Status lifecycle for audio/video:
 
 **If YouTube blocks the download** ("Sign in to confirm you're not a bot"):
 `compile:import` downloads server-side and can't use your browser cookies.
-Download the video locally with yt-dlp and upload it instead:
+Download locally with yt-dlp, extract audio with ffmpeg (much lighter upload
+than video), then upload:
 ```bash
 yt-dlp --cookies-from-browser chrome -o episode.mp4 "https://youtube.com/watch?v=VIDEO_ID"
-THREAD_ID=$(faces compile:upload alias --file episode.mp4 --kind thread --face-speaker "Guest" --json | jq -r '.thread_id // .id')
+ffmpeg -i episode.mp4 -vn -acodec libmp3lame -q:a 4 episode.mp3
+THREAD_ID=$(faces compile:upload alias --file episode.mp3 --kind thread --face-speaker "Guest" --json | jq -r '.thread_id // .id')
 # CLI polls for transcription automatically
 faces compile:thread:get "$THREAD_ID"    # review transcript
 faces compile:thread:make "$THREAD_ID"   # compile when ready
