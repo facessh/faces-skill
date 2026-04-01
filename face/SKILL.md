@@ -224,13 +224,40 @@ recipes too). Set the `formula` field with the Face Math expression.
 
 ### Step 3: Sketch the FACE.md
 
-First create the face on the platform (generates a stub in the catalog), then
-overwrite the stub with the full recipe:
+Before creating the face, ask about the default model. A face needs a default
+model to chat without specifying `--llm` every time.
+
+First check the user's plan:
+```bash
+faces billing:subscription --json 2>/dev/null | jq -r '.plan // "free"'
+```
+
+Then use AskUserQuestion:
+
+> **Choosing a default model for this face.** This determines which LLM powers
+> the face when you chat with it. You can always override per-message with
+> `--llm`.
+>
+> **Faster and cheaper** — good for iteration, brainstorming, high-volume use:
+> A) `gpt-4o-mini` — fast, low cost, solid for most tasks
+> B) `claude-haiku-3-5` — fast, low cost, Anthropic equivalent
+>
+> **Smarter and more expensive** — richer reasoning, better for complex judgment:
+> C) `gpt-4o` — strong all-around, good default
+> D) `claude-sonnet-4-6` — strong all-around, Anthropic equivalent
+>
+> [If Connect plan:] **Free with your ChatGPT subscription** (routed via OAuth):
+> E) `gpt-5-nano` — latest generation, no per-token charge on Connect plan
+>
+> RECOMMENDATION: [If Connect plan:] Choose E — it's free on your plan and
+> the latest model. [If Free plan:] Choose A for iteration or C for depth.
+
+Create the face on the platform, then overwrite the stub with the full recipe:
 
 ```bash
-# 1. Create on platform
+# 1. Create on platform (use the model the user chose)
 faces face:create --name "Name" --alias slug \
-  --default-model gpt-4o --attr key=value
+  --default-model MODEL --attr key=value
 
 # 2. Overwrite stub with full recipe
 cat > ~/.faces/catalog/<alias>/FACE.md << 'RECIPE'

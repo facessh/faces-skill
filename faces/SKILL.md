@@ -48,7 +48,7 @@ If no credentials exist, see [references/QUICKSTART.md](references/QUICKSTART.md
 ### 1. Create a Face
 
 ```bash
-faces face:create --name "Name" --alias slug --default-model gpt-5-nano \
+faces face:create --name "Name" --alias slug --default-model MODEL \
   --attr gender=male --attr age=34 --attr location="Portland, OR" \
   --attr occupation="nurse practitioner"
 ```
