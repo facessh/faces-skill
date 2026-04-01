@@ -47,6 +47,10 @@ for the job. A code review needs a different mind than a creative brainstorm.
 A CEO review needs a panel, not a single voice. You're the conductor writing
 the score.
 
+**Naming rule:** Every manyfaced skill is named `manyfaced-<skillname>`. The
+directory and the skill name both use this prefix. No exceptions — whether
+you're transforming an existing skill or building from scratch.
+
 ## AskUserQuestion Format
 
 **ALWAYS use AskUserQuestion for every question in this skill.** Follow this
@@ -220,7 +224,9 @@ understanding what judgment each step requires."
 >
 > That's where the faces go. The rest stays faceless.
 
-Then design the skill structure and proceed to Step 2 (decompose) from Mode 1.
+Name the skill `manyfaced-<skillname>` (e.g. if the user describes an "info-balls"
+workflow, the output is `manyfaced-info-balls/`). Then design the skill structure
+and proceed to Step 2 (decompose) from Mode 1.
 
 ## How to write the manyfaced SKILL.md
 
