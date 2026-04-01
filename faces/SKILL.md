@@ -79,7 +79,7 @@ faces compile:import alias --url "URL" --type document --perspective first-perso
 ```bash
 faces compile:import alias --url "URL" --type thread --no-wait --json
 # Returns thread_id. After transcription completes, remap speaker:
-faces compile:thread:edit THREAD_ID --face-speaker "Speaker A"
+faces compile:thread:edit THREAD_ID --face-speaker "A"
 faces compile:thread:make THREAD_ID --no-wait --json
 ```
 
@@ -99,7 +99,7 @@ THREAD_ID=$(faces compile:upload alias --file recording.mp4 --kind thread --no-w
 faces compile:thread:get "$THREAD_ID" --json | jq '{prepare_status}'
 # When transcription done (prepare_status: null), review and remap:
 faces compile:thread:get "$THREAD_ID"
-faces compile:thread:edit "$THREAD_ID" --face-speaker "Speaker B"
+faces compile:thread:edit "$THREAD_ID" --face-speaker "B"
 faces compile:thread:make "$THREAD_ID" --no-wait --json
 ```
 
@@ -117,14 +117,16 @@ Status lifecycle:
 - Compilation: `preparing` → `syncing` → `synced` or `stalled` or `failed`
 
 **If YouTube blocks the download** ("Sign in to confirm you're not a bot"):
-Download locally with yt-dlp, extract audio with ffmpeg, upload:
+Download locally with yt-dlp, extract and compress audio with ffmpeg, upload.
+Keep files under 100MB — large uploads can fail. For long recordings (1hr+),
+use mono 48kbps:
 ```bash
 yt-dlp --cookies-from-browser chrome -o episode.mp4 "https://youtube.com/watch?v=VIDEO_ID"
-ffmpeg -i episode.mp4 -vn -acodec libmp3lame -q:a 4 episode.mp3
+ffmpeg -i episode.mp4 -vn -ac 1 -b:a 48k episode.mp3
 THREAD_ID=$(faces compile:upload alias --file episode.mp3 --kind thread --no-wait --json | jq -r '.thread_id // .id')
 # Poll for transcription, then review, remap, compile:
 faces compile:thread:get "$THREAD_ID"
-faces compile:thread:edit "$THREAD_ID" --face-speaker "Speaker A"
+faces compile:thread:edit "$THREAD_ID" --face-speaker "A"
 faces compile:thread:make "$THREAD_ID" --no-wait --json
 ```
 Use `--kind document` for solo speakers. For diarized audio, speakers are labeled A, B, etc.

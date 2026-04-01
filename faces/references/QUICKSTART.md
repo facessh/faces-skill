@@ -96,7 +96,7 @@ IMPORT=$(faces compile:import alice \
   --type thread --no-wait --json)
 THREAD_ID=$(echo "$IMPORT" | jq -r '.thread_id // .id')
 # After transcription completes, review and remap speaker:
-# faces compile:thread:edit "$THREAD_ID" --face-speaker "Speaker A"
+# faces compile:thread:edit "$THREAD_ID" --face-speaker "A"
 ```
 
 If `--type thread` fails with 422, retry with `--type document`.

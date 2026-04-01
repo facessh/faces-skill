@@ -294,16 +294,16 @@ starting the next.
 faces compile:import <alias> --url "<youtube-url>" --type document \
   --perspective first-person --no-wait --json
 
-# If YouTube blocks: download locally, extract audio, upload
+# If YouTube blocks: download locally, extract + compress audio (<100MB), upload
 yt-dlp --cookies-from-browser chrome -o video.mp4 "<youtube-url>"
-ffmpeg -i video.mp4 -vn -acodec libmp3lame -q:a 4 audio.mp3
+ffmpeg -i video.mp4 -vn -ac 1 -b:a 48k audio.mp3
 THREAD_ID=$(faces compile:upload <alias> --file audio.mp3 --kind thread \
   --no-wait --json | jq -r '.thread_id // .id')
 # Poll for transcription:
 faces compile:thread:get "$THREAD_ID" --json | jq '{prepare_status}'
 # When done, review and remap speaker:
 faces compile:thread:get "$THREAD_ID"
-faces compile:thread:edit "$THREAD_ID" --face-speaker "Speaker B"
+faces compile:thread:edit "$THREAD_ID" --face-speaker "B"
 faces compile:thread:make "$THREAD_ID" --no-wait --json
 
 # Local text/PDF file
