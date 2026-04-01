@@ -31,8 +31,11 @@ Always use `--json` when you need to extract values from command output.
 
 ## Setup
 
-Run `faces auth:whoami` to check credentials. If none exist, see
-[references/AUTH.md](references/AUTH.md). Install if missing: `npm install -g faces-cli`.
+Check CLI: `faces --version`. Install if missing: `npm install -g faces-cli`.
+If below v1.4.4: `npm install -g faces-cli@latest` (older versions have auth bugs).
+
+Check credentials: `faces auth:whoami`. If none exist, see
+[references/QUICKSTART.md](references/QUICKSTART.md) for full setup.
 
 ## Core workflows
 

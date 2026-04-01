@@ -4,13 +4,16 @@ End-to-end guide for getting a human from zero to chatting with a Face. Follow t
 
 **Website:** https://faces.sh — **Docs:** https://docs.faces.sh — **API:** api.faces.sh
 
-## 1. Install the CLI
+## 1. Install or update the CLI
 
 ```bash
-npm install -g faces-cli
+# Check if already installed
+faces --version 2>/dev/null
 ```
 
-Verify: `faces --version`
+If not installed: `npm install -g faces-cli`
+
+If installed but below v1.4.4: `npm install -g faces-cli@latest` — older versions have bugs with API key auth and config management that will cause failures.
 
 ## 2. Register an account
 
