@@ -10,6 +10,16 @@ description: >
   generate a /face-alias slash command. Trigger when the user says "create a
   face", "I need a persona", "make me a digital twin", "build a mind for",
   or names a person they want to turn into an AI. Also trigger on /face.
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - Write
+  - Edit
+  - AskUserQuestion
+  - WebSearch
+  - WebFetch
 ---
 
 # /face — Guided Face Creation
@@ -30,6 +40,22 @@ from real source material that give an LLM genuine depth. You do the legwork:
 find the actual talks, the actual writings, the actual interviews. The user
 reviews and edits. Then you compile. Then you hand them a slash command they can
 use from anywhere.
+
+## AskUserQuestion Format
+
+**ALWAYS use AskUserQuestion for every question in this skill.** Follow this
+structure:
+
+1. **Context:** One sentence on what you're building and where you are in the
+   flow. Assume the user stepped away and needs a reminder.
+2. **The question:** Plain English. No jargon. Concrete examples.
+3. **Options:** Lettered options: `A) ... B) ... C) ...`
+4. **Recommendation** (when you have one): `RECOMMENDATION: Choose [X]
+   because [reason]`
+
+If the user's answer is vague, push back with a follow-up AskUserQuestion
+before moving on. The first answer is usually the polished version — the
+real answer comes after the push.
 
 ## Response posture
 
@@ -62,61 +88,80 @@ before asking the next one. Push on vague answers.
 
 #### Q1: Who
 
-Ask the user (using AskUserQuestion if you have it):
+Use AskUserQuestion:
 
-> Who do you want to build? A specific real person, a type of thinker
-> (archetype), or a blend of multiple minds (composite)?
+> **Building a face.** First question: what kind of mind are we creating?
+>
+> A) **A real person** — someone specific whose thinking you want to capture
+> B) **An archetype** — a type of thinker (e.g. "a skeptical investor," "a
+>    systems engineer who's seen everything break")
+> C) **A composite** — a blend of multiple minds using Face Math
+> D) **Not sure yet** — let's figure it out together
 
-This determines which branch the interview follows.
+This determines which branch the interview follows. If D, ask what task they
+need the mind for and recommend a type based on their answer.
 
 #### Q2: Why (branches by type)
 
-**If real person:**
+**If real person (A):**
 
-Ask the user (using AskUserQuestion if you have it):
+Use AskUserQuestion:
 
-> A real person contains multitudes — they think differently as a parent than
-> as a CEO than as a comedian. Which version of this person do you want? What's
-> the context you need them in?
+> **Building a face of [person].** A real person contains multitudes — they
+> think differently as a parent than as a CEO than as an artist. Which version
+> do you want?
+>
+> Describe the context you need them in. What question do you want to ask
+> this mind that a generic AI can't answer well?
 
-Push: if they give a generic answer ("as an advisor"), push for the specific
-cognitive mode: "Their advice on what? An advisor giving product feedback is a
-different mind than the same person giving life advice. What question do you
-want to ask them?"
+Push: if they give a generic answer ("as an advisor"), follow up with another
+AskUserQuestion: "Their advice on what? An advisor giving product feedback is a
+different mind than the same person giving life advice. Which cognitive mode do
+you need?"
 
-**If archetype or composite:**
+**If archetype or composite (B/C):**
 
-Ask the user (using AskUserQuestion if you have it):
+Use AskUserQuestion:
 
-> What job does this mind do for you? What question do you want to ask them
-> that a generic AI can't answer well?
+> **Building an archetype.** What job does this mind do for you? What's the
+> question you want to ask them that a generic AI can't answer well?
+>
+> Be specific — "give me advice" is too broad. "Tear apart my API design
+> before I ship it" is a mind I can build.
 
-Push: if they say "give me advice," push — "Advice about what? The best faces
-are built for a specific cognitive task, not general helpfulness."
+Push: if the answer is still vague, follow up: "The best faces are built for a
+specific cognitive task, not general helpfulness. What decision are you trying
+to make, or what work product are you trying to improve?"
 
 #### Q3: Cognitive core (branches by type)
 
 **If real person:**
 
-Ask the user (using AskUserQuestion if you have it):
+Use AskUserQuestion:
 
-> What's the thing about how this person thinks that you can't get from a
-> generic AI? Not their opinions — their reasoning style, their instincts,
-> the way they cut through a problem. Can you give a specific example — a
-> decision or statement where you thought "that's the way I want this mind
-> to reason"?
+> **Narrowing the cognitive profile.** What's the thing about how this person
+> thinks that you can't get from a generic AI? Not their opinions — their
+> reasoning style, their instincts, the way they cut through a problem.
+>
+> If you can, give a specific example — a decision, a quote, a moment where
+> you thought "that's exactly the way I want this mind to reason."
 
-Push: if they give a surface trait ("they're smart"), push for the mechanism —
-"Smart how? What do they see that other smart people miss?"
+Push: if they give a surface trait ("they're smart"), follow up: "Smart how?
+What do they see that other smart people miss? That's the cognitive signature
+we need to capture in the source material."
 
 **If archetype or composite:**
 
-Ask the user (using AskUserQuestion if you have it):
+Use AskUserQuestion:
 
-> What's the cognitive trait that matters most — the thing that makes this
-> mind different from a smart generalist? And is there someone you've worked
-> with, read, or admired who thinks this way? That person might be the source
+> **Defining the cognitive core.** What's the trait that makes this mind
+> different from a smart generalist? And is there someone you've worked with,
+> read, or admired who thinks this way? That person might be the source
 > material.
+>
+> A) I have a specific person in mind who exemplifies this
+> B) I can describe the thinking style but don't have a specific person
+> C) I want to blend traits from multiple people
 
 Push: "You said 'analytical.' Analytical like a management consultant who
 builds frameworks, or analytical like a physicist who reduces everything to
@@ -124,11 +169,19 @@ first principles? Those produce very different output."
 
 #### Q4: Confirm
 
-Synthesize what you've heard:
+Synthesize what you've heard into a one-paragraph profile and use
+AskUserQuestion:
 
-> Here's the mind I'm going to build: [description]. The cognitive core is
-> [trait/reasoning style]. I'll draw from [sources/exemplars for this facet].
-> Sound right, or should I adjust?
+> **Here's the mind I'm going to build:**
+>
+> [One paragraph: who, which facet/cognitive mode, what reasoning style,
+> what sources/exemplars you plan to draw from]
+>
+> A) Looks right — go research and build the recipe
+> B) Close, but I want to adjust [they'll tell you what]
+> C) That's not what I meant — let me re-explain
+>
+> RECOMMENDATION: Choose A if this captures what you described.
 
 Wait for confirmation or correction. Then move to Step 2.
 
@@ -208,12 +261,15 @@ reasoning style to extract from the sources, etc.>
 
 ### Step 4: Iterate
 
-Present the FACE.md to the user. This is co-creation — ask the user
-(using AskUserQuestion if you have it):
+Present the FACE.md to the user. This is co-creation. Use AskUserQuestion:
 
-> Here's the recipe. Review it — does the description capture the mind you
-> want? Are the queued sources right? Anything to add, remove, or change
-> before we compile?
+> **FACE.md recipe for [alias] is ready.** Review the description, queued
+> sources, and notes below. Does this capture the mind you want?
+>
+> A) Looks good — let's compile
+> B) I want to change something (tell me what)
+> C) Add more sources — I know of something you missed
+> D) Start over — this isn't the right direction
 
 They may want to:
 - Add or remove sources from Queued
