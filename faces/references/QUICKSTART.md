@@ -119,6 +119,7 @@ Or, if you created the document inline (step 4, "Raw text"), you can create and 
 
 ```bash
 faces compile:doc alice --file essay.txt --no-wait --json
+# Poll: faces compile:doc:get DOC_ID --json | jq '{prepare_status}'
 ```
 
 For threads:
