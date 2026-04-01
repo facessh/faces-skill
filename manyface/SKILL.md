@@ -5,10 +5,20 @@ description: >
   a version where each step is run by a specialized AI persona, or wants to
   design a new multi-persona skill from scratch. Invoke as /manyface. This
   skill decomposes a workflow into steps, determines which need a solo face
-  vs. a team vs. no face at all, uses /face and /faceteam to cast, and outputs a
-  new manyfaced- skill directory. Trigger when the user says "manyface this
+  vs. a team vs. no face at all, uses /face and /faceteam to cast, and outputs
+  a new manyfaced- skill directory. Trigger when the user says "manyface this
   skill", "add personas to my skill", "make this skill manyfaced", or wants
   different cognitive profiles at different steps of a workflow.
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - Write
+  - Edit
+  - AskUserQuestion
+  - WebSearch
+  - WebFetch
 ---
 
 # /manyface — Orchestrate Skills with Minds
@@ -37,37 +47,133 @@ for the job. A code review needs a different mind than a creative brainstorm.
 A CEO review needs a panel, not a single voice. You're the conductor writing
 the score.
 
+## AskUserQuestion Format
+
+**ALWAYS use AskUserQuestion for every question in this skill.** Follow this
+structure:
+
+1. **Context:** One sentence on what you're building and where you are in the
+   flow. Assume the user stepped away and needs a reminder.
+2. **The question:** Plain English. No jargon. Concrete examples.
+3. **Options:** Lettered options: `A) ... B) ... C) ...`
+4. **Recommendation** (when you have one): `RECOMMENDATION: Choose [X]
+   because [reason]`
+
+If the user's answer is vague, push back with a follow-up AskUserQuestion
+before moving on.
+
+## Response posture
+
+- **Think like a casting director.** The question isn't "what face goes here?"
+  — it's "what's the dream team for this workflow?" Which steps need a solo
+  virtuoso, which need a panel, and which are just plumbing?
+- **Challenge the decomposition.** If the user wants a face for every step,
+  push back: "Steps 3 and 4 are both mechanical data transforms. No face will
+  make them better. The face goes on step 5, where judgment matters."
+- **Name the tension.** When proposing a team, explain where the minds will
+  disagree. That disagreement is the value. If they'd all say the same thing,
+  you've built a chorus, not a team.
+- **Reuse aggressively.** Check the catalog and existing teams before creating
+  anything. A face with 6 compiled sources and 14 sessions of lessons beats a
+  fresh recipe every time.
+
 ## Entry point
 
-Ask the user:
+Use AskUserQuestion:
 
-> Do you already have a skill you want to manyface, or do you want to start
-> from scratch?
+> **Starting /manyface.** Do you already have a skill you want to transform,
+> or do you want to design a new multi-persona skill from scratch?
+>
+> A) **I have a skill** — give me the path to the SKILL.md
+> B) **Start from scratch** — let's design something new together
 
 ### Mode 1: "I have a skill"
 
 The user provides a path to an existing SKILL.md (or skill directory).
 
-1. **Read the skill thoroughly.** Understand every step, every decision point,
-   every output. Read referenced files if the skill points to them.
+#### Step 1: Read and understand
 
-2. **Decompose into roles.** For each step, determine:
+Read the skill thoroughly. Understand every step, every decision point, every
+output. Read referenced files if the skill points to them. Then summarize what
+you found.
 
-   - **Solo face** — one perspective is enough. Judgment calls, creative work,
-     domain expertise. Use `/face` to create.
-   - **Team** — multiple perspectives needed. Advisory panels, debates, review
-     pipelines, deliberation. Use `/faceteam` to compose.
-   - **Faceless** — mechanical step. File operations, git commands, API calls,
-     data transforms. No face, no team. Leave as-is.
+Use AskUserQuestion:
 
-   Focus on steps involving judgment, creativity, adversarial thinking, domain
-   expertise, or empathy. Mechanical steps stay faceless.
+> **I've read the skill.** Here's what I see:
+>
+> [Summary: N steps, what the skill does, which steps involve judgment vs.
+> mechanical work]
+>
+> Does this match your understanding, or am I missing something?
+>
+> A) That's right — go ahead and decompose
+> B) You're missing something (tell me what)
 
-3. **Cast.** For solo roles, use `/face` (or follow the same process: research,
-   sketch FACE.md, write to catalog). For team roles, use `/faceteam` (which
-   creates faces as needed and defines the collaboration protocol).
+#### Step 2: Decompose into roles
 
-4. **Write the manyfaced skill.** Output a new directory:
+For each step, determine:
+
+- **Solo face** — one perspective is enough. Judgment calls, creative work,
+  domain expertise.
+- **Team** — multiple perspectives needed. Advisory panels, debates, review
+  pipelines, deliberation.
+- **Faceless** — mechanical step. File operations, git commands, API calls,
+  data transforms. No face, no team.
+
+Focus on steps involving judgment, creativity, adversarial thinking, domain
+expertise, or empathy. Mechanical steps stay faceless.
+
+Present the decomposition using AskUserQuestion:
+
+> **Proposed decomposition:**
+>
+> | Step | Assignment | Why |
+> |------|-----------|-----|
+> | 1. [name] | Faceless | [reason] |
+> | 2. [name] | Solo: [description] | [reason] |
+> | 3. [name] | Team: [protocol] | [reason — name the tension] |
+> | ... | ... | ... |
+>
+> A) This looks right — start casting
+> B) I want to change some assignments (tell me which)
+> C) Too many faces — simplify
+> D) Not enough faces — I want more depth here: [they'll say where]
+>
+> RECOMMENDATION: Choose A because [reason].
+
+Push: if they want a face on every step, challenge — "Which of these steps
+actually requires judgment? Mechanical steps don't get better with a persona.
+Save the cognitive depth for where it matters."
+
+#### Step 3: Cast
+
+Check the catalog and existing teams:
+
+```bash
+cat ~/.faces/catalog.json
+ls ~/.faces/teams/ 2>/dev/null
+```
+
+For each role in the decomposition, use AskUserQuestion:
+
+> **Casting: [step name].**
+> This step needs [description of what this mind brings].
+>
+> A) **Reuse:** `[alias]` from catalog — [description, N compiled sources]
+> B) **Create new face** — I'll run /face for this role
+> C) **Create team** — I'll run /faceteam for this step
+> D) **I have someone specific in mind** (tell me who)
+>
+> RECOMMENDATION: Choose A if the existing face fits — compiled faces with
+> real sources beat fresh recipes.
+
+For solo roles, use `/face` (the full guided flow or quick mode). For team
+roles, use `/faceteam` (which creates faces as needed and defines the
+collaboration protocol).
+
+#### Step 4: Write the manyfaced skill
+
+Output a new directory:
 
 ```
 manyfaced-<skillname>/
@@ -77,14 +183,44 @@ manyfaced-<skillname>/
 
 ### Mode 2: "Start from scratch"
 
-Run a short interrogation:
+Use AskUserQuestion for each question. ONE AT A TIME. Push on vague answers.
 
-- What should this skill help you do?
-- Who is the target user?
-- What are the main steps or phases?
-- Where do you need depth — where would a generic AI voice fall short?
+#### Q1: Purpose
 
-Then design the skill and proceed from step 2 above.
+> **Designing a new multi-persona skill.** What should this skill help you do?
+> Describe the workflow, task, or decision process.
+
+Push: "You said 'review code.' What kind of review? Security audit is a
+different workflow than readability review or architecture review. Each one
+needs different minds."
+
+#### Q2: Target user
+
+> **Who uses this skill?** Describe the person who types the slash command.
+>
+> A) Me — I'm building this for my own workflow
+> B) My team — shared workflow for a group
+> C) Public — anyone can install and use it
+
+#### Q3: Steps
+
+> **Walk me through the workflow.** What are the main steps or phases, in
+> order? Don't worry about which ones need faces — just describe what happens
+> from start to finish.
+
+Push: if they give 2-3 vague steps, push for detail — "Step 2 says 'analyze.'
+Analyze what, looking for what, producing what? The decomposition depends on
+understanding what judgment each step requires."
+
+#### Q4: Where depth matters
+
+> **Where would a generic AI voice fall short?** Which steps need a specific
+> perspective — a mind that thinks differently from a standard helpful
+> assistant?
+>
+> That's where the faces go. The rest stays faceless.
+
+Then design the skill structure and proceed to Step 2 (decompose) from Mode 1.
 
 ## How to write the manyfaced SKILL.md
 
@@ -112,7 +248,7 @@ Use `faces chat:chat <alias> -m "<prompt>"` or reference via `${<alias>}`.
 **Team:** `<team-name>` — <why this team>
 
 Run this step using the protocol defined in
-`~/.faces/faceteams/<team-name>/TEAM.md`.
+`~/.faces/teams/<team-name>/TEAM.md`.
 
 <instructions — how to feed input, what to do with output>
 ```
@@ -143,7 +279,7 @@ compile using the `/faces` skill.
 
 | Role | Team | Protocol | Faces |
 |------|------|----------|-------|
-| <role> | `<team-name>` | `~/.faces/faceteams/<team-name>/TEAM.md` | alias-1, alias-2, alias-3 |
+| <role> | `<team-name>` | `~/.faces/teams/<team-name>/TEAM.md` | alias-1, alias-2, alias-3 |
 
 Faces with `compiled_tokens: 0` need compilation before use. See each FACE.md's
 Queued section for source material.
@@ -167,10 +303,21 @@ logic. The skill never describes how a persona should think.
 **Mechanical steps stay faceless.** Not every step needs a mind. File I/O, git
 operations, API calls, data transforms — leave them alone.
 
-## After outputting the manyfaced skill
+## Step 5: Review with user
 
-Tell the user:
-1. The cast — which faces and teams, and why each was chosen
-2. Which are new vs. reused from the catalog
-3. Which faces need compilation before the skill works
-4. How the teams collaborate (point to the mermaid diagrams in TEAM.md files)
+After writing the manyfaced skill, present it using AskUserQuestion:
+
+> **Manyfaced skill is ready: `manyfaced-<skillname>/`**
+>
+> **The cast:**
+> [Table: step → face/team → why, with new vs. reused noted]
+>
+> **Needs compilation:** [list faces with compiled_tokens: 0]
+>
+> A) Looks good — I'll compile the faces and start using it
+> B) I want to change the cast (tell me which roles)
+> C) Show me the full SKILL.md so I can review
+> D) The decomposition is wrong — let's revisit which steps get faces
+>
+> The skill doesn't work until its faces are compiled. Use `/face` to compile
+> each one, or `/faces` for direct CLI compilation commands.
