@@ -3,7 +3,7 @@
 ```
 faces auth:login        --email  --password
 faces auth:logout
-faces auth:register     --email  --password  --alias  [--name]  [--invite-key]
+faces auth:register     --email  --password  --username  [--name]  [--invite-key]
 faces auth:whoami
 faces auth:refresh
 faces auth:connect      <provider>  [--manual]

@@ -25,7 +25,7 @@ Before creating the account, explain the two plans and ask the human which they 
 Then register:
 
 ```bash
-RESULT=$(faces auth:register --email USER_EMAIL --password 'USER_PASSWORD' --alias USERNAME --json)
+RESULT=$(faces auth:register --email USER_EMAIL --password 'USER_PASSWORD' --username USERNAME --json)
 echo "$RESULT" | jq -r '.activation_checkout_url'
 ```
 

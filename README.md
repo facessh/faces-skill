@@ -55,7 +55,7 @@ npm install -g faces-cli
 You can register manually at the [faces.sh](https://faces.sh/) website, or via the cli:
 
 ```bash
-faces auth:register --email you@example.com --password 'your-password' --alias your-username
+faces auth:register --email you@example.com --password 'your-password' --username your-username
 ```
 
 This returns a Stripe Checkout URL for a $5 minimum activation payment (added as API credits). Complete payment in your browser, then verify:

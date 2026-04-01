@@ -10,11 +10,11 @@ Registration requires a credit card payment to activate. The flow is:
 faces auth:register \
   --email user@example.com \
   --password 'SecurePass123!' \
-  --alias alice \
+  --username alice \
   --json
 ```
 
-`--name` is optional — if omitted, the alias is used as the display name.
+`--name` is optional — if omitted, the username is used as the display name.
 
 The response includes:
 
@@ -55,7 +55,7 @@ Check that `is_active` is `true`. If not, tell the user the payment may not have
 
 ```bash
 # 1. Register
-RESULT=$(faces auth:register --email user@example.com --password 'SecurePass123!' --alias alice --json)
+RESULT=$(faces auth:register --email user@example.com --password 'SecurePass123!' --username alice --json)
 URL=$(echo "$RESULT" | jq -r '.activation_checkout_url')
 
 # 2. Give URL to human, wait for them to confirm payment
