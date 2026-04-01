@@ -112,9 +112,17 @@ faces compile:thread:get ID --json | jq '{prepare_status, chunks_completed, chun
 faces compile:doc:get ID --json | jq '{prepare_status}'
 ```
 
-Status lifecycle:
-- Transcription: `transcribing` → `null` (done) or `failed`
-- Compilation: `preparing` → `syncing` → `synced` or `stalled` or `failed`
+Status meanings (`prepare_status` field):
+
+| Status | Meaning | Action |
+|--------|---------|--------|
+| `"transcribing"` | Audio/video being transcribed | Keep polling |
+| `null` | Ready to compile (transcription done, no compilation started) | Run `compile:thread:make` or `compile:doc:make` |
+| `"preparing"` | Compilation in progress, extracting cognitive primitives | Keep polling |
+| `"syncing"` | Writing primitives to the face | Almost done, keep polling |
+| `"synced"` | Done | Compilation complete |
+| `"failed"` | Something went wrong | Investigate or retry |
+| `"stalled"` | Stuck for 10+ minutes | Re-run the make command |
 
 **If YouTube blocks the download** ("Sign in to confirm you're not a bot"):
 Download locally with yt-dlp, extract and compress audio with ffmpeg, upload.
