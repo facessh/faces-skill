@@ -72,6 +72,28 @@ faces compile:import alias --url "URL" --type document --perspective first-perso
 faces compile:import alias --url "URL" --type thread --face-speaker A
 ```
 
+**Upload a local file (text, PDF, audio, video):**
+```bash
+# Document
+DOC_ID=$(faces compile:upload alias --file report.pdf --kind document --json | jq -r '.document_id // .id')
+faces compile:doc:make "$DOC_ID"
+
+# Thread (conversation transcript or multi-speaker audio/video)
+THREAD_ID=$(faces compile:upload alias --file transcript.txt --kind thread --face-speaker "Name" --json | jq -r '.thread_id // .id')
+faces compile:thread:make "$THREAD_ID"
+```
+
+**If YouTube blocks the download** ("Sign in to confirm you're not a bot"):
+`compile:import` downloads server-side and can't use your browser cookies.
+Download the video locally with yt-dlp and upload it instead — the server
+transcribes audio/video via AssemblyAI automatically:
+```bash
+yt-dlp --cookies-from-browser chrome -o episode.mp4 "https://youtube.com/watch?v=VIDEO_ID"
+THREAD_ID=$(faces compile:upload alias --file episode.mp4 --kind thread --face-speaker "Guest" --json | jq -r '.thread_id // .id')
+faces compile:thread:make "$THREAD_ID"
+```
+Use `--kind document` for solo speakers. For diarized audio, speakers are labeled A, B, etc.
+
 ### 3. Chat
 
 ```bash

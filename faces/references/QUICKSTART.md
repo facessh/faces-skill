@@ -78,7 +78,7 @@ Pick one or more methods depending on what the human has:
 
 **Local file (text, PDF):**
 ```bash
-DOC_ID=$(faces face:upload alice --file /path/to/document.pdf --kind document --json | jq -r '.document_id // .id')
+DOC_ID=$(faces compile:upload alice --file /path/to/document.pdf --kind document --json | jq -r '.document_id // .id')
 ```
 
 **YouTube video (solo speaker):**

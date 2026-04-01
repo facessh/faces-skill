@@ -43,7 +43,7 @@ Johnny: Reading philosophy as a teenager changed everything.
 **Step 3: Upload and compile.**
 
 ```bash
-THREAD_ID=$(faces face:upload alias --file transcript.txt --kind thread \
+THREAD_ID=$(faces compile:upload alias --file transcript.txt --kind thread \
   --face-speaker "Johnny" --json | jq -r '.thread_id // .id')
 faces compile:thread:make "$THREAD_ID"
 ```
