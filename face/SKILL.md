@@ -287,16 +287,27 @@ Revise until they're satisfied.
 When the user is ready, walk through each Queued item:
 
 ```bash
-# YouTube video
+# YouTube video (async — CLI polls until transcription completes)
 faces compile:import <alias> --url "<youtube-url>" --type document \
   --perspective first-person
 
-# Local file
+# If YouTube blocks: download locally, upload the file
+yt-dlp --cookies-from-browser chrome -o video.mp4 "<youtube-url>"
+THREAD_ID=$(faces compile:upload <alias> --file video.mp4 --kind thread \
+  --face-speaker "Speaker" --json | jq -r '.thread_id // .id')
+# CLI polls for transcription automatically
+faces compile:thread:get "$THREAD_ID"    # review transcript with user
+faces compile:thread:make "$THREAD_ID"   # compile when satisfied
+
+# Local text/PDF file (synchronous)
 faces compile:doc <alias> --file <path>
 
 # Interview (agent-as-interviewer)
 # See ../faces/references/INTERVIEWS.md for the full workflow
 ```
+
+For audio/video sources, always review the transcript with the user before
+compiling — transcription quality varies and speaker labels may need correction.
 
 After each successful compile, update the FACE.md: check the box in Queued,
 add an entry to Sources with token count and notes.

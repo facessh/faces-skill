@@ -74,23 +74,39 @@ faces compile:import alias --url "URL" --type thread --face-speaker A
 
 **Upload a local file (text, PDF, audio, video):**
 ```bash
-# Document
+# Document (text/PDF — synchronous)
 DOC_ID=$(faces compile:upload alias --file report.pdf --kind document --json | jq -r '.document_id // .id')
 faces compile:doc:make "$DOC_ID"
 
-# Thread (conversation transcript or multi-speaker audio/video)
+# Thread from text transcript
 THREAD_ID=$(faces compile:upload alias --file transcript.txt --kind thread --face-speaker "Name" --json | jq -r '.thread_id // .id')
+faces compile:thread:make "$THREAD_ID"
+
+# Thread from audio/video — async, CLI polls automatically
+THREAD_ID=$(faces compile:upload alias --file recording.mp4 --kind thread --face-speaker "Guest" --json | jq -r '.thread_id // .id')
+# CLI polls until transcription completes, then returns
+# Review the transcript before compiling:
+faces compile:thread:get "$THREAD_ID"
+# When satisfied:
 faces compile:thread:make "$THREAD_ID"
 ```
 
+Audio/video uploads and imports are asynchronous — the server returns 202
+immediately and transcribes in the background. The CLI polls automatically
+until done. Always review the transcript before compiling.
+
+Status lifecycle for audio/video:
+`transcribing` → `null` (ready) → `preparing` → `syncing` → `synced`
+
 **If YouTube blocks the download** ("Sign in to confirm you're not a bot"):
 `compile:import` downloads server-side and can't use your browser cookies.
-Download the video locally with yt-dlp and upload it instead — the server
-transcribes audio/video via AssemblyAI automatically:
+Download the video locally with yt-dlp and upload it instead:
 ```bash
 yt-dlp --cookies-from-browser chrome -o episode.mp4 "https://youtube.com/watch?v=VIDEO_ID"
 THREAD_ID=$(faces compile:upload alias --file episode.mp4 --kind thread --face-speaker "Guest" --json | jq -r '.thread_id // .id')
-faces compile:thread:make "$THREAD_ID"
+# CLI polls for transcription automatically
+faces compile:thread:get "$THREAD_ID"    # review transcript
+faces compile:thread:make "$THREAD_ID"   # compile when ready
 ```
 Use `--kind document` for solo speakers. For diarized audio, speakers are labeled A, B, etc.
 
@@ -123,7 +139,8 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 |---|---|
 | `faces: command not found` | `npm install -g faces-cli` |
 | `401 Unauthorized` | `faces auth:login` or check `FACES_API_KEY` via `faces config:show` |
-| compile returns "preparing" | Poll: `faces compile:doc:get ID --json` |
+| status "transcribing" | Audio/video transcription in progress — CLI polls automatically, just wait |
+| status "preparing" | Compilation in progress — poll with `compile:doc:get ID --json` or `compile:thread:get ID --json` |
 | `422` on thread import | Retry with `--type document` |
 
 ## Related skills
