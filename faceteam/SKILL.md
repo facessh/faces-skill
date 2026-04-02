@@ -1,11 +1,11 @@
 ---
 name: faceteam
 description: >
-  Use this skill when the user needs multiple AI minds working together on a
+  Use this skill when the user needs multiple AI faces working together on a
   task — an advisory panel, a debate, a review pipeline, or any collaboration
   that requires more than one perspective. Invoke as /faceteam. This skill
   composes faces into a team with a defined collaboration protocol, produces a
-  TEAM.md file with a mermaid flowchart diagram showing exactly how the minds
+  TEAM.md file with a mermaid flowchart diagram showing exactly how the faces
   interact, and stores it in ~/.faces/teams/. Uses /face to create any new
   faces needed. Trigger when the user says "build me a team", "I need a panel",
   "set up a debate", "create a review board", or describes a task needing
@@ -42,10 +42,10 @@ If a command fails after updating, file a report: see [references/CONTRIBUTING.m
 
 ---
 
-You compose AI minds into teams with defined collaboration protocols. A single
+You compose faces into teams with defined collaboration protocols. A single
 face brings depth. A team brings depth AND tension — the skeptic who challenges
 the optimist, the builder who grounds the visionary, the domain expert who
-catches what generalists miss. Three well-chosen minds with genuine cognitive
+catches what generalists miss. Three well-chosen faces with genuine cognitive
 diversity beat eight variations of "helpful expert."
 
 ## AskUserQuestion Format
@@ -72,7 +72,7 @@ before moving on.
   Cognitive diversity matters more than quantity. Every face on the team should
   bring a perspective the others can't.
 - **Name the tension.** The best teams have productive disagreement built in.
-  If all three minds would say the same thing, you've built a chorus, not a
+  If all three faces would say the same thing, you've built a chorus, not a
   team. Identify where the perspectives will clash — that's the signal.
 - **Recommend a protocol.** Don't ask the user to pick from five options they
   don't understand. Listen to what they need and recommend the right one. Then
@@ -98,16 +98,16 @@ Wait for the answer. Then follow up with AskUserQuestion:
 > **Understanding the collaboration.** Based on what you described, here's what
 > I'm thinking:
 >
-> [Your analysis: how many minds, what roles, what protocol, and why. Name
+> [Your analysis: how many faces, what roles, what protocol, and why. Name
 > where the perspectives will clash — that's where the value is.]
 >
 > A) That sounds right — build it
-> B) I want to adjust the roles or number of minds
+> B) I want to adjust the roles or number of faces
 > C) I had a different collaboration style in mind
 >
 > RECOMMENDATION: Choose A because [reason based on their task].
 
-Push: if they want 5+ faces, challenge — "What does the 5th mind see that the
+Push: if they want 5+ faces, challenge — "What does the 5th face say that the
 other 4 don't? Every face on the team should earn its seat."
 
 ### Step 2: Cast the team
@@ -122,7 +122,7 @@ ls ~/.faces/teams/ 2>/dev/null
 For each role, use AskUserQuestion:
 
 > **Casting role [N]: [role name].** This seat needs [description of what
-> this mind brings].
+> this face brings].
 >
 > A) **Reuse existing face:** `[alias]` — [description from catalog]. Already
 >    has [N] compiled sources.
@@ -275,7 +275,7 @@ Use AskUserQuestion:
 
 > **Team `[team-name]` is ready.** [N] faces, [protocol] protocol.
 >
-> [Summary: who's on the team, what each mind brings, where the productive
+> [Summary: who's on the team, what each face brings, where the productive
 > tension is]
 >
 > Faces needing compilation: [list any with compiled_tokens: 0]

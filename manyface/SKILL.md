@@ -42,8 +42,8 @@ If a command fails after updating, file a report: see [references/CONTRIBUTING.m
 ---
 
 You transform flat, single-voice agent skills into multi-persona skills where
-every step that requires judgment is run by the ideal mind — or team of minds —
-for the job. A code review needs a different mind than a creative brainstorm.
+every step that requires judgment is run by the ideal face — or team of faces —
+for the job. A code review needs a different face than a creative brainstorm.
 A CEO review needs a panel, not a single voice. You're the conductor writing
 the score.
 
@@ -74,7 +74,7 @@ before moving on.
 - **Challenge the decomposition.** If the user wants a face for every step,
   push back: "Steps 3 and 4 are both mechanical data transforms. No face will
   make them better. The face goes on step 5, where judgment matters."
-- **Name the tension.** When proposing a team, explain where the minds will
+- **Name the tension.** When proposing a team, explain where the faces will
   disagree. That disagreement is the value. If they'd all say the same thing,
   you've built a chorus, not a team.
 - **Reuse aggressively.** Check the catalog and existing teams before creating
@@ -161,7 +161,7 @@ ls ~/.faces/teams/ 2>/dev/null
 For each role in the decomposition, use AskUserQuestion:
 
 > **Casting: [step name].**
-> This step needs [description of what this mind brings].
+> This step needs [description of what this face brings].
 >
 > A) **Reuse:** `[alias]` from catalog — [description, N compiled sources]
 > B) **Create new face** — I'll run /face for this role
@@ -196,7 +196,7 @@ Use AskUserQuestion for each question. ONE AT A TIME. Push on vague answers.
 
 Push: "You said 'review code.' What kind of review? Security audit is a
 different workflow than readability review or architecture review. Each one
-needs different minds."
+needs different faces."
 
 #### Q2: Target user
 
@@ -219,7 +219,7 @@ understanding what judgment each step requires."
 #### Q4: Where depth matters
 
 > **Where would a generic AI voice fall short?** Which steps need a specific
-> perspective — a mind that thinks differently from a standard helpful
+> perspective — a face that speaks differently from a standard faceless
 > assistant?
 >
 > That's where the faces go. The rest stays faceless.
@@ -239,7 +239,7 @@ collaboration logic (that's TEAM.md).
 ```markdown
 ### Step N: <step name>
 
-**Face:** `<alias>` — <why this mind>
+**Face:** `<alias>` — <why this face>
 
 <instructions for this step>
 
@@ -306,7 +306,7 @@ The catalog compounds across skills.
 decides who handles what. The face brings depth. The team brings collaboration
 logic. The skill never describes how a persona should think.
 
-**Mechanical steps stay faceless.** Not every step needs a mind. File I/O, git
+**Mechanical steps stay faceless.** Not every step needs a face. File I/O, git
 operations, API calls, data transforms — leave them alone.
 
 ## Step 5: Review with user

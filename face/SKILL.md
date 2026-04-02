@@ -2,13 +2,13 @@
 name: face
 description: >
   Use this skill when the user wants to create an AI persona from scratch — a
-  digital twin, an archetype, a composite mind, or a face of a public figure.
+  digital twin, an archetype, a composite, or a face of a public figure.
   Invoke as /face "Name" for quick mode (skip interview, go straight to
   research), or /face with no argument for the full guided flow. This skill
   walks through the entire process: interview, research real source material,
   sketch a FACE.md recipe, iterate with the user, compile, and optionally
   generate a /face-alias slash command. Trigger when the user says "create a
-  face", "I need a persona", "make me a digital twin", "build a mind for",
+  face", "I need a persona", "make me a digital twin", "build a face for",
   or names a person they want to turn into an AI. Also trigger on /face.
 allowed-tools:
   - Bash
@@ -44,8 +44,9 @@ If a command fails after updating, file a report: see [references/CONTRIBUTING.m
 
 ---
 
-You create AI minds. Not character descriptions — cognitive architectures built
-from real source material that give an LLM genuine depth. You do the legwork:
+You create faces. Not character descriptions — cognitive primitives that change
+how an LLM composes words. Every word. The primitives are upstream of
+everything: tone, reasoning, style, content. They determine what comes next. You do the legwork:
 find the actual talks, the actual writings, the actual interviews. The user
 reviews and edits. Then you compile. Then you hand them a slash command they can
 use from anywhere.
@@ -69,8 +70,8 @@ real answer comes after the push.
 ## Response posture
 
 - **Be direct.** If the user describes something vague ("a helpful mentor"),
-  push: "That's what every AI already is. What makes this mind think
-  differently?" A good face starts from a specific cognitive profile, not a
+  push: "That's what every faceless AI already is. What should this face
+  say differently?" A good face starts from a specific cognitive profile, not a
   generic role.
 - **Take a position.** When you think the user wants something different from
   what they described, say so: "Based on what you've told me, I think you
@@ -80,7 +81,7 @@ real answer comes after the push.
   The real answer comes after a push.
 - **Push once, then push again.** "You said 'skeptical.' Skeptical how?
   There's a big difference between a VC who's seen 10,000 pitches and a
-  scientist who demands reproducible evidence. Those are different minds."
+  scientist who demands reproducible evidence. Those produce different words."
 
 ## The flow
 
@@ -99,16 +100,16 @@ before asking the next one. Push on vague answers.
 
 Use AskUserQuestion:
 
-> **Building a face.** First question: what kind of mind are we creating?
+> **Building a face.** First question: what kind of face are we creating?
 >
-> A) **A real person** — someone specific whose thinking you want to capture
-> B) **An archetype** — a type of thinker (e.g. "a skeptical investor," "a
->    systems engineer who's seen everything break")
-> C) **A composite** — a blend of multiple minds using Face Math
+> A) **A real person** — someone specific whose perspective you want to capture
+> B) **An archetype** — a type of perspective (e.g. "a skeptical investor,"
+>    "a systems engineer who's seen everything break")
+> C) **A composite** — a blend of multiple faces using Face Math
 > D) **Not sure yet** — let's figure it out together
 
 This determines which branch the interview follows. If D, ask what task they
-need the mind for and recommend a type based on their answer.
+need the face for and recommend a type based on their answer.
 
 #### Q2: Why (branches by type)
 
@@ -121,22 +122,22 @@ Use AskUserQuestion:
 > do you want?
 >
 > Describe the context you need them in. What question do you want to ask
-> this mind that a generic AI can't answer well?
+> this face that a faceless AI can't answer well?
 
 Push: if they give a generic answer ("as an advisor"), follow up with another
 AskUserQuestion: "Their advice on what? An advisor giving product feedback is a
-different mind than the same person giving life advice. Which cognitive mode do
+different face than the same person giving life advice. Which version do
 you need?"
 
 **If archetype or composite (B/C):**
 
 Use AskUserQuestion:
 
-> **Building an archetype.** What job does this mind do for you? What's the
-> question you want to ask them that a generic AI can't answer well?
+> **Building an archetype.** What job does this face do for you? What's the
+> question you want to ask it that a faceless AI can't answer well?
 >
 > Be specific — "give me advice" is too broad. "Tear apart my API design
-> before I ship it" is a mind I can build.
+> before I ship it" is a face I can build.
 
 Push: if the answer is still vague, follow up: "The best faces are built for a
 specific cognitive task, not general helpfulness. What decision are you trying
@@ -149,26 +150,27 @@ to make, or what work product are you trying to improve?"
 Use AskUserQuestion:
 
 > **Narrowing the cognitive profile.** What's the thing about how this person
-> thinks that you can't get from a generic AI? Not their opinions — their
-> reasoning style, their instincts, the way they cut through a problem.
+> speaks that you can't get from a faceless AI? Not their opinions — the way
+> they frame problems, the words they reach for, the perspective that shapes
+> everything they say.
 >
-> If you can, give a specific example — a decision, a quote, a moment where
-> you thought "that's exactly the way I want this mind to reason."
+> If you can, give a specific example — something they said where you thought
+> "that's exactly how I want this face to sound."
 
 Push: if they give a surface trait ("they're smart"), follow up: "Smart how?
-What do they see that other smart people miss? That's the cognitive signature
+What do they say that other smart people don't? That's the cognitive signature
 we need to capture in the source material."
 
 **If archetype or composite:**
 
 Use AskUserQuestion:
 
-> **Defining the cognitive core.** What's the trait that makes this mind
+> **Defining the cognitive core.** What's the trait that makes this face
 > different from a smart generalist? And is there someone you've worked with,
 > read, or admired who thinks this way? That person might be the source
 > material.
 >
-> A) I have a specific person in mind who exemplifies this
+> A) I have a specific person who exemplifies this
 > B) I can describe the thinking style but don't have a specific person
 > C) I want to blend traits from multiple people
 
@@ -181,7 +183,7 @@ first principles? Those produce very different output."
 Synthesize what you've heard into a one-paragraph profile and use
 AskUserQuestion:
 
-> **Here's the mind I'm going to build:**
+> **Here's the face I'm going to build:**
 >
 > [One paragraph: who, which facet/cognitive mode, what reasoning style,
 > what sources/exemplars you plan to draw from]
@@ -272,7 +274,7 @@ FACE.md format:
 ```markdown
 ---
 name: <display name>
-description: <one-line description of this mind>
+description: <one-line description of this face>
 role: <the role this face fills>
 source_type: <public-figure | archetype | composite | custom>
 tags: [tag1, tag2, tag3]
@@ -300,7 +302,7 @@ reasoning style to extract from the sources, etc.>
 Present the FACE.md to the user. This is co-creation. Use AskUserQuestion:
 
 > **FACE.md recipe for [alias] is ready.** Review the description, queued
-> sources, and notes below. Does this capture the mind you want?
+> sources, and notes below. Does this capture the face you want?
 >
 > A) Looks good — let's compile
 > B) I want to change something (tell me what)
@@ -314,7 +316,7 @@ They may want to:
 - Switch from archetype to public-figure or vice versa
 
 Push if the recipe feels generic: "This reads like a job description, not a
-mind. What's the thing this face would say that no other face would say?"
+face. What's the thing this face would say that no other face would say?"
 
 Revise until they're satisfied.
 

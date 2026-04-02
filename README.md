@@ -6,9 +6,9 @@ The Faces Platform compiles source texts — documents, interviews, YouTube talk
 
 **faces-skill** is a bundle of four slash commands that turn Claude Code (or OpenClaw) into a face creation and orchestration system:
 
-- **`/face`** — Create a single AI mind from scratch. Interview, research, compile, chat.
-- **`/faceteam`** — Compose multiple minds into a team with a collaboration protocol.
-- **`/manyface`** — Transform any agent skill into a multi-persona version where every step is run by the ideal mind for the job.
+- **`/face`** — Create a face from scratch. Interview, research, compile, chat.
+- **`/faceteam`** — Compose multiple faces into a team with a collaboration protocol.
+- **`/manyface`** — Transform any agent skill into a multi-persona version where every step is run by the ideal face for the job.
 - **`/faces`** — Core CLI operations. The power-user interface for direct platform access.
 
 **Who this is for:**
@@ -16,7 +16,7 @@ The Faces Platform compiles source texts — documents, interviews, YouTube talk
 - **People frustrated with agent orchestration complexity** — If you've tried n8n, Paperclip, CrewAI, or similar tools and found them overengineered for what should be simple ("I just want three different perspectives on this decision"), Faces gives you that with slash commands, not flowchart builders.
 - **Isolated thinkers who need a real sparring partner** — Researchers, founders, writers, autodidacts working alone who need something that can genuinely push back on their thinking — not agree politely, not "have you considered the other side," but actually reason from a different cognitive structure.
 - **Agent skill authors** — who want to give their skills cognitive depth instead of a generic voice
-- **Teams** — who want to build a catalog of reusable AI minds that compound across projects
+- **Teams** — who want to build a catalog of reusable faces that compound across projects
 
 ## Quickstart (Agent Install)
 
@@ -86,7 +86,7 @@ cd ~/.openclaw/workspace/skills/faces-skill && ./setup
 
 ## See it work
 
-### Create a mind
+### Create a face
 
 ```
 You:    /face "Garry Tan"
@@ -172,8 +172,8 @@ Claude: [reads the skill, decomposes into 5 steps]
 ## The hierarchy
 
 ```
-Individual mind     →  FACE.md   →  ~/.faces/catalog/<alias>/
-Group of minds      →  TEAM.md   →  ~/.faces/faceteams/<team-name>/
+Individual face     →  FACE.md   →  ~/.faces/catalog/<alias>/
+Group of faces      →  TEAM.md   →  ~/.faces/teams/<team-name>/
 Workflow            →  SKILL.md  →  manyfaced-<skillname>/
 ```
 
@@ -184,7 +184,7 @@ A manyfaced skill's SKILL.md is a conductor's score. It says: "In step 1, use th
 ```
 ~/.faces/
   catalog.json                    # auto-generated index
-  catalog/                        # individual minds
+  catalog/                        # individual faces
     garry-tan/FACE.md
     skeptic/FACE.md
   teams/                          # groups + protocols

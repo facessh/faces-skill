@@ -22,6 +22,8 @@ compatibility: Requires the faces CLI (npm install -g faces-cli) and internet ac
 
 The Faces Platform compiles source texts (documents and conversation transcripts) into a Face — a persona built of cognitive primitives that give an underlying LLM a complex perspective that is richer, more accurate, and uses far fewer tokens than prompt-stuffing approaches. Faces can be chatted with, compared, and composed.
 
+Without a Face, an LLM is **faceless** — generic, interchangeable, forgettable. A Face specializes it. Gives it perspective, coherence, and nuance that doesn't collapse back into LLM-speak on long threads.
+
 Official docs: https://docs.faces.sh
 
 Always use `--json` when you need to extract values from command output.
