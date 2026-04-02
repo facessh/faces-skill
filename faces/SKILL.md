@@ -123,6 +123,7 @@ Status meanings (`prepare_status` field):
 | `"preparing"` | Compilation in progress, extracting cognitive primitives | Keep polling |
 | `"syncing"` | Writing primitives to the face | Almost done, keep polling |
 | `"synced"` | Done | Compilation complete |
+| `"paused"` | Compilation paused by user/agent | Resume with `compile:*:make` or reset with `compile:*:reset` |
 | `"failed"` | Something went wrong | Investigate or retry |
 | `"stalled"` | Stuck for 10+ minutes | Re-run the make command |
 
@@ -178,6 +179,7 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 | status "transcribing" | Audio/video transcription in progress — poll with `compile:thread:get ID --json` |
 | status "preparing" | Compilation in progress — poll with `compile:doc:get ID --json` or `compile:thread:get ID --json` |
 | `422` on thread import | Retry with `--type document` |
+| Bad extraction results | Pause with `compile:thread:pause ID` or `compile:doc:pause ID`, review what was extracted, then either resume with `compile:*:make ID` or wipe and restart with `compile:*:reset ID` (keeps source content, removes extraction) |
 
 ## Related skills
 

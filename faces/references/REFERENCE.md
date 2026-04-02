@@ -30,6 +30,8 @@ faces compile:import       <alias>  --url YOUTUBE_URL  [--type document|thread] 
 faces compile:doc          <alias>  (--content TEXT | --file PATH)  [--label]  [--perspective first-person|third-person]  [--timeout N]  [--no-wait]
 faces compile:doc:create   <alias>  [--label]  (--content TEXT | --file PATH)  [--perspective first-person|third-person]
 faces compile:doc:make     <doc_id>  [--timeout N]  [--no-wait]
+faces compile:doc:pause    <doc_id>
+faces compile:doc:reset    <doc_id>
 faces compile:doc:list     <alias>
 faces compile:doc:get      <doc_id>
 faces compile:doc:edit     <doc_id>  [--label]  [--content TEXT | --file PATH]  [--perspective first-person|third-person]
@@ -41,6 +43,8 @@ faces compile:thread:get      <thread_id>
 faces compile:thread:edit     <thread_id>  [--label TEXT]  [--face-speaker NAME]
 faces compile:thread:message  <thread_id>  -m MSG
 faces compile:thread:make     <thread_id>  [--timeout N]  [--no-wait]
+faces compile:thread:pause    <thread_id>
+faces compile:thread:reset    <thread_id>
 faces compile:thread:sync     <thread_id>
 faces compile:thread:delete   <thread_id>  [--yes]
 
