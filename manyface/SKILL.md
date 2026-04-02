@@ -401,3 +401,40 @@ After QA, present the manyfaced skill using AskUserQuestion:
 >
 > The skill doesn't work until its faces are compiled. Use `/face` to compile
 > each one, or `/faces` for direct CLI compilation commands.
+
+## Step 7: Offer to publish
+
+After the user approves, offer to contribute the skill to the community catalog.
+
+Use AskUserQuestion:
+
+> **Want to share this with the community?** The manyfaced catalog at
+> [github.com/facessh/manyfaced](https://github.com/facessh/manyfaced) is a
+> collection of manyfaced skills anyone can install.
+>
+> A) Yes — prep it for a pull request
+> B) No — this one's just for me
+
+If A: package the skill for submission:
+
+1. Create a `README.md` in the skill directory explaining what the skill does,
+   who it's for, and example output
+2. Copy all FACE.md recipes and TEAM.md files into a `recipes/` subdirectory
+3. Verify the directory matches the catalog's contribution format:
+   ```
+   manyfaced-<skillname>/
+     SKILL.md
+     README.md
+     recipes/
+       <alias>-FACE.md
+       <team-name>-TEAM.md
+   ```
+4. Tell the user:
+   > Ready to submit. Copy this directory to your local clone of the manyfaced
+   > repo and open a PR:
+   > ```bash
+   > cp -r manyfaced-<skillname> ~/.manyfaced/manyfaced-<skillname>
+   > cd ~/.manyfaced && git checkout -b manyfaced-<skillname>
+   > git add manyfaced-<skillname> && git commit -m "Add manyfaced-<skillname>"
+   > gh pr create --title "Add manyfaced-<skillname>" --body "..."
+   > ```

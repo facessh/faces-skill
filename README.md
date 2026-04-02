@@ -243,6 +243,14 @@ The FACE.md grows with the face. Queued tracks what to compile next. Sources rec
 
 **Never run `faces config:clear`** — It wipes all credentials with no recovery. If auth fails, fix the specific value with `faces config:set`.
 
+## Community catalog
+
+Browse and install manyfaced skills built by the community:
+[**facessh/manyfaced**](https://github.com/facessh/manyfaced)
+
+Built a manyfaced skill? Run `/manyface` and choose "publish" at the end to
+prep a PR to the catalog.
+
 ---
 
-[faces.sh](https://faces.sh) · [docs](https://docs.faces.sh) · [CLI reference](faces/references/REFERENCE.md)
+[faces.sh](https://faces.sh) · [docs](https://docs.faces.sh) · [CLI reference](faces/references/REFERENCE.md) · [manyfaced catalog](https://github.com/facessh/manyfaced)
