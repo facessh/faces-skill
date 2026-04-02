@@ -234,6 +234,44 @@ The manyfaced SKILL.md is a conductor's score. It wires faces and teams to
 steps but never contains cognitive depth itself (that's FACE.md) or
 collaboration logic (that's TEAM.md).
 
+### Circuit diagram (mandatory)
+
+Every manyfaced SKILL.md must include a mermaid flowchart right after the
+Setup section. This is the skill's logic diagram — it shows how input flows
+through the steps and which face or team handles each one.
+
+Faces and teams are **opaque modules** — black boxes with a label and a path
+reference. The diagram shows the skill's routing logic, not the internal
+protocol of each team. Think of it as a circuit schematic where faces and
+teams are gates.
+
+**Notation:**
+- Faceless steps: plain rectangles `[Step name]`
+- Solo face steps: rounded rectangles `([alias])` with the catalog path below
+- Team steps: hexagons `{{team-name}}` with the teams path below
+- Edges show data flow between steps
+
+Example for a code review skill:
+
+```mermaid
+graph TD
+    IN[Input: diff] --> S1[Parse diff]
+    S1 --> S2([sec-reviewer])
+    S2 --> S3{{quality-arch-review}}
+    S3 --> S4([review-synthesizer])
+    S4 --> OUT[Output: review]
+
+    S2 -.- P2["~/.faces/catalog/sec-reviewer/FACE.md"]
+    S3 -.- P3["~/.faces/teams/quality-arch-review/TEAM.md"]
+    S4 -.- P4["~/.faces/catalog/review-synthesizer/FACE.md"]
+```
+
+The shape tells the story at a glance: rectangles are faceless plumbing,
+rounded boxes are solo faces, hexagons are teams. Dotted lines point to
+where each module is defined. This diagram should be readable as a standalone
+artifact — someone seeing it on GitHub should understand the skill's
+architecture without reading the prose.
+
 **For solo face steps:**
 
 ```markdown
