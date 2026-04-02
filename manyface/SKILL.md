@@ -360,9 +360,32 @@ logic. The skill never describes how a persona should think.
 **Mechanical steps stay faceless.** Not every step needs a face. File I/O, git
 operations, API calls, data transforms — leave them alone.
 
-## Step 5: Review with user
+## Step 5: QA the output
 
-After writing the manyfaced skill, present it using AskUserQuestion:
+Before presenting to the user, verify the manyfaced SKILL.md against this
+checklist. Fix any issues before proceeding.
+
+- [ ] **Name:** directory and skill name both use `manyfaced-` prefix
+- [ ] **Circuit diagram:** present after Setup, uses correct notation
+      (`[faceless]`, `([solo face])`, `{{team}}`), dotted lines to paths
+- [ ] **Setup table:** lists all faces and teams with recipe paths
+- [ ] **Every face referenced exists:** either in `~/.faces/catalog/` or
+      created during this session
+- [ ] **Every team referenced exists:** either in `~/.faces/teams/` or
+      created during this session
+- [ ] **Step instructions use correct CLI:** `faces chat:chat <alias>` or
+      `${<alias>}` templates, not made-up commands
+- [ ] **Faceless steps have no face/team assignment**
+- [ ] **No cognitive depth in the SKILL.md itself:** the skill routes, it
+      doesn't describe how a face should speak (that's FACE.md's job)
+- [ ] **Diagram matches the steps:** every face and team in the prose appears
+      in the diagram, and vice versa
+
+If anything fails, fix it. Then proceed to Step 6.
+
+## Step 6: Review with user
+
+After QA, present the manyfaced skill using AskUserQuestion:
 
 > **Manyfaced skill is ready: `manyfaced-<skillname>/`**
 >
