@@ -28,9 +28,11 @@ Use this for **Claude Code**:
 
 ```
 Install Faces skill:
-1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill && cd ~/.claude/skills/faces-skill && ./setup
-2. list the available skills: /faces, /face, /faceteam, /manyface
-3. set me up to use faces: ask if I have an account, else help me get one
+1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill
+2. read the setup script at ~/.claude/skills/faces-skill/setup
+3. run it: cd ~/.claude/skills/faces-skill && ./setup
+4. list the available skills: /faces, /face, /faceteam, /manyface
+5. set me up to use faces: ask if I have an account, else help me get one
 ```
 
 Use this for **OpenClaw**:
@@ -74,10 +76,16 @@ faces billing:balance --json | jq '.is_active'
 
 ```bash
 git clone --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill
+```
+
+Then run the setup script (it symlinks each skill into `~/.claude/skills/` so
+Claude Code discovers them):
+
+```bash
 cd ~/.claude/skills/faces-skill && ./setup
 ```
 
-The setup script symlinks each skill into `~/.claude/skills/` so Claude Code discovers them. You now have `/face`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
+You now have `/face`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
 
 ### OpenClaw
 
