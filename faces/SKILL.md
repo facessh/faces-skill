@@ -33,17 +33,32 @@ Always use `--json` when you need to extract values from command output.
 
 ## Setup
 
-Check CLI: `faces --version`. Install if missing: `npm install -g faces-cli`.
-If below v1.4.4: `npm install -g faces-cli@latest` (older versions have auth bugs).
+```bash
+faces --version 2>/dev/null || echo "NOT_INSTALLED"
+LATEST=$(npm outdated -g faces-cli --json 2>/dev/null | jq -r '.["faces-cli"].latest // empty')
+[ -n "$LATEST" ] && echo "UPDATE_AVAILABLE: $LATEST"
+faces auth:whoami --json 2>/dev/null
+echo "EXIT:$?"
+[ -f ~/.faces/config.json ] && echo "HAS_CONFIG" || echo "NO_CONFIG"
+```
 
-Check credentials: run `faces config:show` to see active credentials.
-- API key takes priority over JWT — if both exist, the API key is used
-- If switching environments (localhost vs production, different accounts),
-  clear the stale credential: `faces config:set api_key ""` or `faces config:set token ""`
-- When in doubt, pass `--api-key` and `--base-url` explicitly
-- Never run `faces config:clear` (wipes everything with no recovery)
+If `NOT_INSTALLED`: run `npm install -g faces-cli` and re-run setup.
 
-If no credentials exist, see [references/QUICKSTART.md](references/QUICKSTART.md) for full setup.
+If `UPDATE_AVAILABLE`: run `npm install -g faces-cli@latest` before proceeding.
+
+**Auth triage:**
+
+- `EXIT:0` → authenticated. Proceed.
+- `EXIT:1` + `HAS_CONFIG` → returning user. Read the whoami output to
+  understand what failed. Present the diagnosis to the user and help them
+  fix it. Do NOT walk through QUICKSTART or ask about plans.
+- `EXIT:1` + `NO_CONFIG` → new user. See
+  [references/QUICKSTART.md](references/QUICKSTART.md) for setup.
+
+**Secret hygiene:** Never display API keys, tokens, or passwords from config
+files. Always mask them (e.g. `sk-faces-...dN`).
+
+Never run `faces config:clear` (wipes everything with no recovery).
 
 ## Core workflows
 
