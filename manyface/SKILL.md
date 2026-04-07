@@ -2,13 +2,14 @@
 name: manyface
 description: >
   Use this skill when the user wants to transform an existing agent skill into
-  a version where each step is run by a specialized AI persona, or wants to
-  design a new multi-persona skill from scratch. Invoke as /manyface. This
-  skill decomposes a workflow into steps, determines which need a solo face
-  vs. a team vs. no face at all, uses /face and /faceteam to cast, and outputs
-  a new manyfaced- skill directory. Trigger when the user says "manyface this
-  skill", "add personas to my skill", "make this skill manyfaced", or wants
-  different cognitive profiles at different steps of a workflow.
+  a version where each step is run by a specialized AI persona, design a new
+  multi-persona skill from scratch, or browse and install community manyfaced
+  skills from the catalog. Invoke as /manyface for the guided flow,
+  /manyface install <name> to install a skill directly, or /manyface list to
+  browse. Trigger when the user says "manyface this skill", "add personas to
+  my skill", "make this skill manyfaced", "browse manyfaced skills",
+  "install a manyfaced skill", or wants different cognitive profiles at
+  different steps of a workflow.
 allowed-tools:
   - Bash
   - Read
@@ -108,13 +109,20 @@ before moving on.
 
 ## Entry point
 
+**Quick modes:**
+
+- `/manyface list` → skip to Mode 3 (browse the catalog)
+- `/manyface install manyfaced-<name>` → skip to Mode 3, install directly
+
+**Full mode** — no argument:
+
 Use AskUserQuestion:
 
-> **Starting /manyface.** Do you already have a skill you want to transform,
-> or do you want to design a new multi-persona skill from scratch?
+> **Starting /manyface.** What do you want to do?
 >
-> A) **I have a skill** — give me the path to the SKILL.md
-> B) **Start from scratch** — let's design something new together
+> A) **I have a skill** — transform it into a multi-persona version
+> B) **Start from scratch** — design a new manyfaced skill together
+> C) **Browse the catalog** — see what the community has built and install one
 
 ### Mode 1: "I have a skill"
 
@@ -252,6 +260,78 @@ understanding what judgment each step requires."
 Name the skill `manyfaced-<skillname>` (e.g. if the user describes an "info-balls"
 workflow, the output is `manyfaced-info-balls/`). Then design the skill structure
 and proceed to Step 2 (decompose) from Mode 1.
+
+### Mode 3: "Browse the catalog"
+
+Fetch the catalog index from GitHub:
+
+```bash
+curl -s https://raw.githubusercontent.com/faces-sh/manyfaced/main/README.md
+```
+
+Parse the catalog table and present it using AskUserQuestion:
+
+> **Community manyfaced skills:**
+>
+> [numbered list from the catalog table — skill name, what it does]
+>
+> Pick a number to see details, or tell me which one to install.
+
+When the user picks a skill, fetch its README for details:
+
+```bash
+curl -s https://raw.githubusercontent.com/faces-sh/manyfaced/main/manyfaced-<name>/README.md
+```
+
+Present a summary and use AskUserQuestion:
+
+> **manyfaced-<name>:** [summary from README]
+>
+> **The cast:** [faces and teams required]
+>
+> A) Install it
+> B) Go back to the list
+> C) I want to see the full SKILL.md first
+
+**To install:**
+
+```bash
+# Clone the catalog (shallow, single skill)
+git clone --depth 1 --filter=blob:none --sparse \
+  https://github.com/faces-sh/manyfaced.git /tmp/manyfaced-install
+cd /tmp/manyfaced-install && git sparse-checkout set manyfaced-<name>
+
+# Copy skill to Claude Code skills directory
+cp -r manyfaced-<name> ~/.claude/skills/manyfaced-<name>
+
+# Copy structural FACE.md and TEAM.md files to ~/.faces/
+# (only if the skill ships with them in catalog/)
+if [ -d manyfaced-<name>/catalog ]; then
+  cp -rn manyfaced-<name>/catalog/* ~/.faces/catalog/ 2>/dev/null
+  cp -rn manyfaced-<name>/catalog/teams/* ~/.faces/teams/ 2>/dev/null
+fi
+
+# Clean up
+rm -rf /tmp/manyfaced-install
+```
+
+After installing, check which faces need compilation:
+
+```bash
+for f in $(grep -l 'compiled_tokens: 0' ~/.faces/catalog/*/FACE.md 2>/dev/null); do
+  echo "Needs compilation: $f"
+done
+```
+
+Use AskUserQuestion:
+
+> **Installed manyfaced-<name>.** [N] faces need compilation before you can
+> use this skill.
+>
+> A) Compile them now — I'll walk you through each one with /face
+> B) I'll compile them later
+>
+> RECOMMENDATION: Choose A — the skill won't work until its faces are compiled.
 
 ## How to write the manyfaced SKILL.md
 
