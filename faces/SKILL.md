@@ -193,6 +193,7 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 | `401 Unauthorized` | `faces auth:login` or check `FACES_API_KEY` via `faces config:show` |
 | status "transcribing" | Audio/video transcription in progress — poll with `compile:thread:get ID --json` |
 | status "preparing" | Compilation in progress — poll with `compile:doc:get ID --json` or `compile:thread:get ID --json` |
+| `402` insufficient credits | Check balance: `faces billing:balance --json`. Top up: `faces billing:topup --amount <USD>` (min $1). If no payment method on file: `faces billing:card-setup` first. See [BILLING.md](references/BILLING.md) |
 | `422` on thread import | Retry with `--type document` |
 | Bad extraction results | Pause with `compile:thread:pause ID` or `compile:doc:pause ID`, review what was extracted, then either resume with `compile:*:make ID` or wipe and restart with `compile:*:reset ID` (keeps source content, removes extraction) |
 
@@ -225,4 +226,5 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 - [ATTRIBUTES.md](references/ATTRIBUTES.md) — Accepted --attr keys
 - [OAUTH.md](references/OAUTH.md) — ChatGPT account linking
 - [SCOPE.md](references/SCOPE.md) — Security boundaries
+- [BILLING.md](references/BILLING.md) — Balance, top-ups, payment methods, cost reference
 - [CONTRIBUTING.md](references/CONTRIBUTING.md) — File bug reports via `gh issue create`
