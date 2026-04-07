@@ -28,12 +28,10 @@ Paste the following into the chat with your agent:
 Use this for **Claude Code**:
 
 ```
-Install Faces skill:
-1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill
-2. read the setup script at ~/.claude/skills/faces-skill/setup
-3. run it: cd ~/.claude/skills/faces-skill && ./setup
-4. list the available skills: /faces, /face, /facechat, /faceteam, /manyface
-5. set me up to use faces: ask if I have an account, else help me get one
+Install and setup Faces:
+1. clone https://github.com/facessh/faces-skill.git into ~/.claude/skills/faces-skill then inspect the setup script and run it if it looks safe
+2. tell me about the available skills: /face, /facechat, /faceteam, /manyface, and how you can work with /faces for me
+3. ask if I already have a Faces account, and if so walk me through getting you access, else tell me about account options and help me get one
 ```
 
 Use this for **OpenClaw**:
