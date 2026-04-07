@@ -198,7 +198,8 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 
 ## Related skills
 
-- `/face` — Guided face creation (interview, research, sketch, compile, generate slash command)
+- `/face` — Guided face creation (interview, research, sketch, compile)
+- `/facechat` — Chat with any face in your catalog
 - `/faceteam` — Compose faces into teams with collaboration protocols
 - `/manyface` — Transform a skill into a multi-persona version
 
@@ -209,7 +210,7 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
   catalog.json          # auto-generated index
   catalog/<alias>/      # individual FACE.md files
   teams/<team-name>/    # TEAM.md files (collaboration protocols)
-  skills/face-<alias>/  # auto-generated face slash commands
+  skills/              # shared skills (facechat, etc.)
 ```
 
 ## References
