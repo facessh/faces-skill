@@ -6,7 +6,7 @@ If a command fails unexpectedly — especially after updating the CLI — file a
 report so the team can fix it:
 
 ```bash
-gh issue create --repo facessh/faces-skill \
+gh issue create --repo faces-sh/faces-skill \
   --title "Bug: <one-line summary>" \
   --label "agent-report" \
   --body "$(cat <<'ISSUE'
@@ -33,7 +33,7 @@ ISSUE
 ```
 
 If `gh` is not installed or not authenticated, open an issue manually at:
-https://github.com/facessh/faces-skill/issues
+https://github.com/faces-sh/faces-skill/issues
 
 ## What to report
 

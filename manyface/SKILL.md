@@ -434,7 +434,7 @@ After the user approves, offer to contribute the skill to the community catalog.
 Use AskUserQuestion:
 
 > **Want to share this with the community?** The manyfaced catalog at
-> [github.com/facessh/manyfaced](https://github.com/facessh/manyfaced) is a
+> [github.com/faces-sh/manyfaced](https://github.com/faces-sh/manyfaced) is a
 > collection of manyfaced skills anyone can install.
 >
 > A) Yes — prep it for a pull request
@@ -463,7 +463,7 @@ will ship with an empty `catalog/` and instructions to run `/face` for each role
 3. Tell the user:
    > Ready to submit. Fork the catalog repo and open a PR:
    > ```bash
-   > gh repo fork facessh/manyfaced --clone
+   > gh repo fork faces-sh/manyfaced --clone
    > cp -r manyfaced-<skillname> manyfaced/manyfaced-<skillname>
    > cd manyfaced && git checkout -b add-manyfaced-<skillname>
    > git add manyfaced-<skillname>

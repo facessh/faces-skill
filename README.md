@@ -29,7 +29,7 @@ Use this for **Claude Code**:
 
 ```
 Install and setup Faces:
-1. clone https://github.com/facessh/faces-skill.git into ~/.claude/skills/faces-skill (note the git path is facessh with 2 Ss) then inspect the setup script and run it if it looks safe
+1. clone https://github.com/faces-sh/faces-skill.git into ~/.claude/skills/faces-skill then inspect the setup script and run it if it looks safe
 2. tell me about the available skills: /face, /facechat, /faceteam, /manyface, and how you can work with /faces for me
 3. ask if I already have a Faces account, and if so walk me through getting you access, else tell me about account options and help me get one
 ```
@@ -74,7 +74,7 @@ faces billing:balance --json | jq '.is_active'
 ### Step 3: Install the skill bundle
 
 ```bash
-git clone --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill
+git clone --depth 1 https://github.com/faces-sh/faces-skill.git ~/.claude/skills/faces-skill
 ```
 
 Then run the setup script (it symlinks each skill into `~/.claude/skills/` so
@@ -89,7 +89,7 @@ You now have `/face`, `/facechat`, `/faceteam`, `/manyface`, and `/faces` availa
 ### OpenClaw
 
 ```bash
-git clone --depth 1 https://github.com/facessh/faces-skill.git ~/.openclaw/workspace/skills/faces-skill
+git clone --depth 1 https://github.com/faces-sh/faces-skill.git ~/.openclaw/workspace/skills/faces-skill
 cd ~/.openclaw/workspace/skills/faces-skill && ./setup
 ```
 
@@ -249,11 +249,11 @@ The FACE.md grows with the face. Queued tracks what to compile next. Sources rec
 ## Community catalog
 
 Browse and install manyfaced skills built by the community:
-[**facessh/manyfaced**](https://github.com/facessh/manyfaced)
+[**faces-sh/manyfaced**](https://github.com/faces-sh/manyfaced)
 
 Built a manyfaced skill? Run `/manyface` and choose "publish" at the end to
 prep a PR to the catalog.
 
 ---
 
-[faces.sh](https://faces.sh) · [docs](https://docs.faces.sh) · [CLI reference](faces/references/REFERENCE.md) · [manyfaced catalog](https://github.com/facessh/manyfaced)
+[faces.sh](https://faces.sh) · [docs](https://docs.faces.sh) · [CLI reference](faces/references/REFERENCE.md) · [manyfaced catalog](https://github.com/faces-sh/manyfaced)
