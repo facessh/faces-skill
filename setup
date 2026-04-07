@@ -10,4 +10,4 @@ for dir in "$SKILL_DIR"/*/; do
   echo "Linked /$name"
 done
 
-echo "Done. Available skills: /faces, /face, /team, /manyface"
+echo "Done. Available skills: /faces, /face, /facechat, /faceteam, /manyface"

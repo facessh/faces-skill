@@ -6,9 +6,10 @@ The Faces Platform compiles source texts — documents, interviews, YouTube talk
 
 The result is a face that specializes an LLM with perspective, coherence, and nuance that doesn't collapse back into LLM-speak on long threads — using far fewer tokens than prompt-stuffing approaches like SOUL.md files.
 
-**faces-skill** is a bundle of four slash commands that turn Claude Code (or OpenClaw) into a face creation and orchestration system:
+**faces-skill** is a bundle of five slash commands that turn Claude Code (or OpenClaw) into a face creation and orchestration system:
 
-- **`/face`** — Create a face from scratch. Interview, research, compile, chat.
+- **`/face`** — Create a face from scratch. Interview, research, compile.
+- **`/facechat`** — Chat with any face in your catalog. Pass an alias or browse to pick one.
 - **`/faceteam`** — Compose multiple faces into a team with a collaboration protocol.
 - **`/manyface`** — Transform any agent skill into a multi-persona version where every step is run by the ideal face for the job.
 - **`/faces`** — Core CLI operations. The power-user interface for direct platform access.
@@ -31,7 +32,7 @@ Install Faces skill:
 1. git clone --single-branch --depth 1 https://github.com/facessh/faces-skill.git ~/.claude/skills/faces-skill
 2. read the setup script at ~/.claude/skills/faces-skill/setup
 3. run it: cd ~/.claude/skills/faces-skill && ./setup
-4. list the available skills: /faces, /face, /faceteam, /manyface
+4. list the available skills: /faces, /face, /facechat, /faceteam, /manyface
 5. set me up to use faces: ask if I have an account, else help me get one
 ```
 
@@ -85,7 +86,7 @@ Claude Code discovers them):
 cd ~/.claude/skills/faces-skill && ./setup
 ```
 
-You now have `/face`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
+You now have `/face`, `/facechat`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
 
 ### OpenClaw
 
@@ -116,12 +117,9 @@ You:    Looks good, compile it.
 Claude: [compiles Wikipedia bio — 12.4k tokens, 34 primitives]
         [imports YouTube talk — 18.2k tokens, 48 primitives]
         Done. 82 cognitive primitives across 2 sources.
-        Want me to create /face-garry-tan so you can chat from anywhere?
+        Chat with him anytime: /facechat garry-tan
 
-You:    Yes.
-Claude: Created /face-garry-tan. Try it now.
-
-You:    /face-garry-tan "Should I pivot from horizontal to vertical SaaS?"
+You:    /facechat garry-tan "Should I pivot from horizontal to vertical SaaS?"
 Garry:  Before I answer that — what's your retention look like on the
         horizontal product? Because the thing people get wrong about
         pivots is they think it's about the market. It's not. It's
@@ -174,7 +172,8 @@ Claude: [reads the skill, decomposes into 5 steps]
 
 | Skill | What it does |
 |-------|-------------|
-| `/face` | **Guided face creation.** Six steps: interview → research (real URLs via web search) → sketch FACE.md → iterate with user → compile → generate `/face-alias` slash command. Quick mode: `/face "Person Name"` skips the interview. |
+| `/face` | **Guided face creation.** Six steps: interview → research (real URLs via web search) → sketch FACE.md → iterate with user → compile. Quick mode: `/face "Person Name"` skips the interview. |
+| `/facechat` | **Chat with any face.** `/facechat garry-tan` to chat directly, or `/facechat` to browse your catalog and pick. Supports model override and template references. |
 | `/faceteam` | **Team composition.** Composes faces into a team with a collaboration protocol defined by a mermaid flowchart. Five protocol types: round-robin, pipeline, chief-of-staff, debate, voting. Produces a TEAM.md in `~/.faces/faceteams/`. |
 | `/manyface` | **Skill orchestrator.** Takes an existing skill (or designs one from scratch), decomposes it into steps, determines which need a solo face vs. a team vs. no face, and outputs a `manyfaced-` skill directory. |
 | `/faces` | **Core CLI.** Direct access to the faces platform: create faces, compile documents, import YouTube videos, chat, compare faces, compose with Face Math, manage API keys and billing. |
@@ -199,11 +198,9 @@ A manyfaced skill's SKILL.md is a conductor's score. It says: "In step 1, use th
     skeptic/FACE.md
   teams/                          # groups + protocols
     advisory-board/TEAM.md
-  skills/                         # auto-generated face slash commands
-    face-garry-tan/SKILL.md
 ```
 
-Everything under `~/.faces/` is the Faces ecosystem. Catalog, teams, and face-skills all compound independently across projects and sessions.
+Everything under `~/.faces/` is the Faces ecosystem. Catalog and teams compound independently across projects and sessions. Chat with any face via `/facechat`.
 
 ## FACE.md format
 
