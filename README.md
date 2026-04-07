@@ -43,6 +43,14 @@ Please install Faces:
 3. tell me how to use it
 ```
 
+## Community catalog
+
+Browse and install manyfaced skills built by the community:
+[**faces-sh/manyfaced**](https://github.com/faces-sh/manyfaced)
+
+Built a manyfaced skill? Run `/manyface` and choose "publish" at the end to
+prep a PR to the catalog.
+
 ## Manual Install
 
 **Requirements:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Node.js](https://nodejs.org/) (for the faces CLI)
@@ -267,14 +275,6 @@ The FACE.md grows with the face. Queued tracks what to compile next. Sources rec
 **`401 Unauthorized`** — Run `faces auth:login --email you@example.com --password 'your-password'` or check `faces config:show`
 
 **Never run `faces config:clear`** — It wipes all credentials with no recovery. If auth fails, fix the specific value with `faces config:set`.
-
-## Community catalog
-
-Browse and install manyfaced skills built by the community:
-[**faces-sh/manyfaced**](https://github.com/faces-sh/manyfaced)
-
-Built a manyfaced skill? Run `/manyface` and choose "publish" at the end to
-prep a PR to the catalog.
 
 ---
 
