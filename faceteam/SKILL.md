@@ -187,6 +187,13 @@ node doesn't have an incoming edge from somewhere, it doesn't see that data.
 Every diagram starts with one `[Query]` entry node and ends with one
 `[Response]` exit node.
 
+**Handoff framing.** When a face's output feeds into the next face and the
+orchestrator needs to frame it (not just pass it raw), insert a `[Compose: ...]`
+node between them. Example: `A --> F[Frame: present face-a's critique as a
+challenge for face-b to defend against] --> B`. Without this, the orchestrator
+concatenates inputs with `[from face-a]: ...` labels — fine for simple handoffs,
+but not when the framing matters.
+
 **Protocol types and when to use them:**
 
 **Round robin** — faces take turns, building on each other's responses.
