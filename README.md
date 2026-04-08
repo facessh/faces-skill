@@ -141,9 +141,14 @@ Einstein: That is not a problem — that is a gift. When two theories
           disagree? Find the disagreement and you find the physics...
 
 You:    /facechat
-Claude: Your face catalog:
+Claude: Your catalog:
+
+        Faces:
         1. einstein — theoretical physicist, first-principles thinker
         2. skeptic — adversarial critic, assumption challenger
+
+        Teams:
+        3. research-review-panel — round-robin critique panel
 
         Who do you want to chat with?
 
@@ -160,17 +165,50 @@ Skeptic: Define "defensible." You mean a moat? Because if your answer
 ```
 You:    /faceteam "I need a panel to critique my research paper"
 Claude: [checks catalog — finds einstein, creates 2 new faces]
-        [designs round-robin protocol with mermaid diagram]
+        [designs round-robin protocol as a mermaid diagram]
 
-        Team: research-review-panel
-        Protocol: round-robin (3 rounds max)
+        Team: research-review-panel (3 rounds max)
 
-        ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-        │   einstein   │ →  │  methodology  │ →  │   skeptic   │ → consensus?
-        │ first-principles│  │  rigor       │    │ assumptions │
-        └─────────────┘    └──────────────┘    └─────────────┘
+        graph TD
+            Q[Query] --> E(einstein)
+            Q --> M(methodology)
+            Q --> S(skeptic)
+            E --> M
+            M --> S
+            S --> CHK{All 3 converged on recommendation, or round = 3}
+            E --> CHK
+            M --> CHK
+            CHK -->|next round| E
+            CHK -->|done| OUT[Response]
 
-        TEAM.md saved to ~/.faces/faceteams/research-review-panel/
+        Three shapes: (face) gets called, [instruction] agent executes,
+        {condition} agent branches. Edges show who sees what.
+
+        TEAM.md saved to ~/.faces/teams/research-review-panel/
+```
+
+### Chat with a team
+
+```
+You:    /facechat research-review-panel "Here's my draft paper on cognitive primitives..."
+Claude: [reads TEAM.md, walks the mermaid protocol]
+
+        einstein: The central claim — that cognitive primitives are
+                  extractable from text — needs a falsifiability criterion.
+                  What observation would disprove this?...
+
+        methodology: The sample size in Section 4 is too small to support
+                     the generalization in your conclusion. You need at
+                     minimum...
+
+        skeptic: You're assuming primitives are stable across contexts.
+                 What if the same source material produces different
+                 primitives under different LLMs?...
+
+        [Consensus check: all 3 flagged Section 4 methodology — converged.
+         Einstein and skeptic diverge on falsifiability framing — round 2.]
+
+        ...
 ```
 
 ### Manyface a skill
@@ -201,8 +239,8 @@ Claude: [reads the skill, decomposes into 5 steps]
 | Skill | What it does |
 |-------|-------------|
 | `/face` | **Guided face creation.** Six steps: interview → research (real URLs via web search) → sketch FACE.md → iterate with user → compile. Quick mode: `/face "Person Name"` skips the interview. |
-| `/facechat` | **Chat with any face.** `/facechat einstein` to chat directly, or `/facechat` to browse your catalog and pick. Supports model override and template references. |
-| `/faceteam` | **Team composition.** Composes faces into a team with a collaboration protocol defined by a mermaid flowchart. Five protocol types: round-robin, pipeline, chief-of-staff, debate, voting. Produces a TEAM.md in `~/.faces/faceteams/`. |
+| `/facechat` | **Chat with any face or team.** `/facechat einstein` to chat with a face, `/facechat review-panel` to run a team's protocol, or `/facechat` to browse your catalog and pick. Supports model override and template references. |
+| `/faceteam` | **Team composition.** Composes faces into a team with a self-sufficient mermaid protocol diagram. Three shapes: `(face)` rounded rects get called, `[instruction]` sharp rects the agent executes, `{condition}` diamonds the agent branches on. Produces a TEAM.md in `~/.faces/teams/`. |
 | `/manyface` | **Skill orchestrator.** Takes an existing skill (or designs one from scratch), decomposes it into steps, determines which need a solo face vs. a team vs. no face, and outputs a `manyfaced-` skill directory. |
 | `/faces` | **Core CLI.** Direct access to the faces platform: create faces, compile documents, import YouTube videos, chat, compare faces, compose with Face Math, manage API keys and billing. |
 
