@@ -78,7 +78,7 @@ either login credentials or an API key.
 
 ## 3. Create a Face
 
-Start by creating the Face with basic demographic attributes. These anchor the persona and improve compilation quality when source material is added later. Common keys: `gender`, `age`, `location`, `occupation`, `education_level`, `religion`, `ethnicity`, `nationality`, `marital_status`. See [ATTRIBUTES.md](ATTRIBUTES.md) for the full list of accepted keys — unrecognized keys are silently ignored.
+Start by creating the Face with basic demographic attributes. These anchor the persona and improve compilation quality when source material is added later. Common keys: `gender`, `age`, `location`, `occupation`, `education_level`, `religion`, `ethnicity`, `nationality`, `marital_status`. Run `faces face:attributes` for the full list — unsupported keys are dropped with a warning.
 
 ```bash
 faces face:create --name "Alice Smith" --alias alice \

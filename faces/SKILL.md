@@ -72,7 +72,9 @@ faces face:create --name "Name" --alias slug --default-model MODEL \
 
 Common `--attr` keys: gender, age, location, occupation, education_level,
 religion, ethnicity, nationality, marital_status.
-Full list → [references/ATTRIBUTES.md](references/ATTRIBUTES.md) (unrecognized keys silently ignored).
+Run `faces face:attributes` for the full list. Attributes have an allow list —
+if an unsupported key is used, the command succeeds but prints a warning listing
+which attributes were dropped.
 
 ### 2. Add source material
 
@@ -223,7 +225,7 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 - [CONCEPTS.md](references/CONCEPTS.md) — What Faces is, cognitive primitives
 - [USE_CASES.md](references/USE_CASES.md) — 14 example applications
 - [TEMPLATES.md](references/TEMPLATES.md) — Face template syntax
-- [ATTRIBUTES.md](references/ATTRIBUTES.md) — Accepted --attr keys
+- Accepted `--attr` keys → run `faces face:attributes`
 - [OAUTH.md](references/OAUTH.md) — ChatGPT account linking
 - [SCOPE.md](references/SCOPE.md) — Security boundaries
 - [BILLING.md](references/BILLING.md) — Balance, top-ups, payment methods, cost reference

@@ -13,6 +13,7 @@ faces auth:connections
 faces face:create       --name  --alias  [--default-model MODEL]  [--description TEXT]  [--formula EXPR | --attr KEY=VALUE... --tool NAME...]
 faces face:list
 faces face:get          <alias>
+faces face:attributes
 faces face:update       <alias>  [--name]  [--default-model MODEL]  [--description TEXT]  [--formula EXPR]  [--attr KEY=VALUE]...
 faces face:delete       <alias>  [--yes]
 faces face:stats
@@ -152,7 +153,7 @@ The `--attr KEY=VALUE` flag on `face:create` and `face:update` sets basic demogr
 | `nationality` | `American` |
 | `marital_status` | `married` |
 
-These are the most common keys. Many more are accepted across categories including birth details, family, career, education, housing, and immigration. **Only keys on the accepted list work — unrecognized keys are silently ignored.** See [ATTRIBUTES.md](ATTRIBUTES.md) for the complete list of all accepted keys.
+These are the most common keys. Many more are accepted across categories including birth details, family, career, education, housing, and immigration. **Only keys on the accepted list work — unsupported keys are dropped with a warning in the response.** Run `faces face:attributes` for the complete categorized list.
 
 **Example — create a Face with basic facts:**
 ```bash
