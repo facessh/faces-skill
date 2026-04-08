@@ -167,19 +167,43 @@ Based on what you learned in Step 1, recommend a protocol. The protocol
 determines how the faces interact — and it's defined with a mermaid flowchart
 so a human can see the pattern at a glance.
 
+**Diagram convention — three shapes, one rule each:**
+
+- `(alias)` **rounded rectangle** = a face gets called via
+  `faces chat:chat alias`. The alias must appear in the frontmatter `faces:`
+  list.
+- `[text]` **sharp rectangle** = the orchestrating agent executes this step
+  itself. The text inside IS the instruction — make it specific enough that
+  any agent can execute it without external context.
+- `{text}` **diamond** = the orchestrating agent evaluates a condition and
+  branches. The text inside IS the condition — spell out exactly what to
+  check and what counts as passing.
+
+**Edges are explicit data flow.** An edge from A to B means B receives A's
+output as input. If node C needs both the original query and node B's output,
+draw two edges: `Q --> C` and `B --> C`. Never assume implicit context — if a
+node doesn't have an incoming edge from somewhere, it doesn't see that data.
+
+Every diagram starts with one `[Query]` entry node and ends with one
+`[Response]` exit node.
+
 **Protocol types and when to use them:**
 
 **Round robin** — faces take turns, building on each other's responses.
 Each face sees all prior responses. Good for advisory panels, brainstorming,
 iterative refinement.
 ```mermaid
-graph LR
-    Q[Query] --> A[face-a]
-    A --> B[face-b]
-    B --> C[face-c]
-    C --> CHECK{Consensus?}
-    CHECK -->|no, round < N| A
-    CHECK -->|yes or max rounds| OUT[Output]
+graph TD
+    Q[Query] --> A(face-a)
+    Q --> B(face-b)
+    Q --> C(face-c)
+    A --> B
+    B --> C
+    C --> CHK{All 3 converged on a specific recommendation. If yes or round = max_rounds, done. Otherwise, loop.}
+    A --> CHK
+    B --> CHK
+    CHK -->|next round| A
+    CHK -->|done| OUT[Response]
 ```
 
 **Pipeline** — sequential chain, each face adds a layer. Output of one becomes
@@ -187,10 +211,10 @@ input to the next. Good for review processes, quality gates, progressive
 refinement.
 ```mermaid
 graph LR
-    IN[Input] --> A[face-a]
-    A --> B[face-b]
-    B --> C[face-c]
-    C --> OUT[Output]
+    Q[Query] --> A(face-a)
+    A --> B(face-b)
+    B --> C(face-c)
+    C --> OUT[Response]
 ```
 
 **Chief of staff** — one face coordinates, delegates to specialists,
@@ -198,38 +222,40 @@ synthesizes their responses. Good for complex decisions requiring multiple
 domains.
 ```mermaid
 graph TD
-    Q[Query] --> COS[chief-of-staff]
-    COS --> S1[specialist-1]
-    COS --> S2[specialist-2]
-    COS --> S3[specialist-3]
-    S1 --> COS
-    S2 --> COS
-    S3 --> COS
-    COS --> OUT[Synthesis]
+    Q[Query] --> COS(chief-of-staff)
+    COS --> S1(specialist-1)
+    COS --> S2(specialist-2)
+    COS --> S3(specialist-3)
+    S1 --> SYN(chief-of-staff)
+    S2 --> SYN
+    S3 --> SYN
+    Q --> SYN
+    SYN --> OUT[Response]
 ```
 
 **Debate** — two sides argue, a judge decides. Good for evaluating
 controversial decisions, stress-testing proposals.
 ```mermaid
 graph TD
-    Q[Query] --> PRO[advocate]
-    Q --> CON[critic]
-    PRO --> J[judge]
+    Q[Query] --> PRO(advocate)
+    Q --> CON(critic)
+    PRO --> J(judge)
     CON --> J
-    J --> OUT[Decision]
+    Q --> J
+    J --> OUT[Response]
 ```
 
 **Voting** — all faces respond independently, results are tallied. No face
 sees the others' responses. Good for calibration, avoiding groupthink.
 ```mermaid
 graph TD
-    Q[Query] --> A[face-a]
-    Q --> B[face-b]
-    Q --> C[face-c]
-    A --> T[Tally]
+    Q[Query] --> A(face-a)
+    Q --> B(face-b)
+    Q --> C(face-c)
+    A --> T[Summarize each position in one sentence. If 2+ positions align, output that position. If all 3 differ, present the 3 positions as a numbered list and note the disagreement.]
     B --> T
     C --> T
-    T --> OUT[Result]
+    T --> OUT[Response]
 ```
 
 Present your recommended protocol using AskUserQuestion:
@@ -258,7 +284,6 @@ TEAM.md format:
 ---
 name: <team-name>
 description: <what this team does>
-protocol: <round-robin | pipeline | chief-of-staff | debate | voting>
 faces: [alias-1, alias-2, alias-3]
 max_rounds: 3
 ---
@@ -266,33 +291,35 @@ max_rounds: 3
 ## Protocol
 
 ```mermaid
-<flowchart matching the protocol type, using actual face aliases as node labels>
+<flowchart using actual face aliases as node labels — this IS the execution
+spec. Any agent can walk this graph mechanically: call faces for () nodes,
+execute instructions for [] nodes, evaluate conditions for {} nodes, pass
+outputs along edges.>
 ```
 
 ## Roles
 
-| Face | Role | Evaluates |
-|------|------|-----------|
-| alias-1 | <role> | <what they focus on> |
-| alias-2 | <role> | <what they focus on> |
-| alias-3 | <role> | <what they focus on> |
-
-## Rules
-
-- <how each face sees prior responses>
-- <constraints on each face's behavior>
-- <what happens if no consensus / edge cases>
-- <termination conditions>
+| Face | Role | Brings |
+|------|------|--------|
+| alias-1 | <role> | <what perspective they add that others can't> |
+| alias-2 | <role> | <what perspective they add that others can't> |
+| alias-3 | <role> | <what perspective they add that others can't> |
 
 ## Notes
 
-<casting rationale, team dynamics, where the tension is, etc.>
+<casting rationale, team dynamics, where the productive tension is>
 ```
 
-The mermaid diagram goes right after frontmatter, before prose. The diagram
-shape IS the documentation — a human should see the collaboration pattern at a
-glance from the shape alone. Use actual face aliases as node labels, not generic
-"Face A" placeholders.
+**The mermaid diagram is the entire execution spec.** There is no separate
+"Rules" section — the diagram encodes everything: who sees what (edges), who
+decides what (diamonds with inline conditions), what the orchestrator does
+(sharp rectangles with inline instructions), and when the flow terminates.
+
+A human should see the collaboration pattern at a glance from the shape alone.
+An agent should be able to execute the protocol by parsing the mermaid and
+walking the graph — no protocol lookup table, no presets.
+
+Use actual face aliases as node labels, not generic "Face A" placeholders.
 
 ### Step 5: Review with user
 

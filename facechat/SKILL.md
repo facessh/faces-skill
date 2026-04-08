@@ -69,38 +69,53 @@ everything after it is the message. Examples:
 - `/facechat socrates` → alias=`socrates`, no message
 - `/facechat` → no alias, no message (browse catalog)
 
-## Resolve the face
+## Resolve the target
 
-**If alias provided** (`/facechat socrates` or `/facechat socrates How are you?`):
+The alias can refer to a **face** (single persona) or a **team** (multiple
+faces with a collaboration protocol). Check both.
 
-Check that the face exists:
+**If alias provided** (`/facechat socrates` or `//facechat socrates How are you?`):
 
 ```bash
+# Check face first, then team
 faces face:get $ALIAS --json 2>/dev/null
+echo "---TEAM_CHECK---"
+ls ~/.faces/teams/$ALIAS/TEAM.md 2>/dev/null
 ```
 
-If not found, check for close matches:
+- If face found → single-face chat (see **Chat** section below).
+- If team found → team chat (see **Team Chat** section below).
+- If both found → face takes priority (teams should have distinct names).
+- If neither found, check for close matches:
 
 ```bash
 cat ~/.faces/catalog.json | jq -r '.[].alias'
+ls ~/.faces/teams/ 2>/dev/null
 ```
 
-Suggest the closest match or offer to create the face with `/face`.
+Suggest the closest match or offer to create the face with `/face` or team
+with `/faceteam`.
 
 **If no alias provided** (`/facechat`):
 
-List the catalog and let the user pick:
+List both faces and teams:
 
 ```bash
 faces face:list --json 2>/dev/null
+echo "---TEAMS---"
+ls ~/.faces/teams/ 2>/dev/null
 ```
 
-Present faces as a numbered list showing alias, name, and description. Use
-AskUserQuestion:
+Present as a numbered list showing alias, name/description, and whether it's
+a face or team. Use AskUserQuestion:
 
-> **Your face catalog.** Who do you want to chat with?
+> **Your catalog.** Who do you want to chat with?
 >
+> **Faces:**
 > [numbered list of faces]
+>
+> **Teams:**
+> [numbered list of teams]
 >
 > Pick a number, or type a name/alias.
 
@@ -139,6 +154,75 @@ faces chat:chat ALIAS -m "MESSAGE" --llm MODEL
 
 Users can reference other faces inline with `${other-alias}` syntax. Pass the
 message as-is -- the platform handles template expansion.
+
+## Team Chat
+
+When the target is a team, read the TEAM.md and execute the mermaid protocol
+diagram mechanically.
+
+### Load the protocol
+
+```bash
+cat ~/.faces/teams/$ALIAS/TEAM.md
+```
+
+Parse the YAML frontmatter for the `faces:` list and `max_rounds:` limit.
+Then parse the mermaid flowchart — this is the entire execution spec.
+
+### Walk the graph
+
+The mermaid diagram uses three shapes. Each has one rule:
+
+- `(alias)` **rounded rectangle** → call the face:
+  `faces chat:chat alias -m "INPUT"` where INPUT is the concatenated output
+  from all incoming edges. Format each input clearly:
+  ```
+  [from Query]: <the user's original message>
+  [from face-a]: <face-a's response>
+  ```
+- `[text]` **sharp rectangle** → you (the orchestrating agent) execute the
+  instruction described in the text. The text IS the instruction.
+- `{text}` **diamond** → you evaluate the condition described in the text
+  and follow the matching outgoing edge. The text IS the condition.
+
+**Edge rule:** an edge from A to B means B receives A's output. If B has
+three incoming edges, B gets all three outputs as input. No implicit context
+— if there's no edge, that data doesn't flow.
+
+**Entry/exit:** the graph starts at the `[Query]` node (the user's message)
+and ends at the `[Response]` node (what you show the user).
+
+### Execution loop
+
+1. Start at `[Query]` — seed it with the user's message.
+2. Follow outgoing edges. For each node you reach:
+   - `(face)` → call `faces chat:chat` with the concatenated inputs.
+   - `[instruction]` → execute the instruction yourself.
+   - `{condition}` → evaluate and branch.
+3. If an edge loops back (e.g. round-robin), increment the round counter.
+   Stop at `max_rounds` from the frontmatter.
+4. When you reach `[Response]`, present the final output to the user.
+
+### Presenting team responses
+
+Show each face's contribution with attribution so the user sees who said what:
+
+> **skeptic:** [response]
+>
+> **builder:** [response]
+>
+> **strategist:** [response]
+>
+> **[Tally/Decision/Final node label]:** [final output]
+
+For pipeline protocols where each face refines the previous output, show only
+the final face's response unless the user asks to see the full chain.
+
+### Follow-up messages
+
+For follow-ups in a team conversation, re-run the full protocol with the new
+message. Each invocation is stateless — the protocol runs fresh each time.
+The user can reference prior responses in their follow-up message naturally.
 
 ## Related skills
 

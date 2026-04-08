@@ -351,28 +351,37 @@ reference. The diagram shows the skill's routing logic, not the internal
 protocol of each team. Think of it as a circuit schematic where faces and
 teams are gates.
 
-**Notation:**
-- Faceless steps: plain rectangles `[Step name]`
-- Solo face steps: rounded rectangles `([alias])` with the catalog path below
-- Team steps: hexagons `{{team-name}}` with the teams path below
-- Edges show data flow between steps
+**Notation — three shapes, consistent across all diagrams:**
+- `[text]` **sharp rectangle** = faceless step (agent executes the instruction)
+- `(alias)` **rounded rectangle** = solo face step (calls
+  `faces chat:chat alias`)
+- `{{team-name}}` **hexagon** = team step (runs the protocol defined in
+  `~/.faces/teams/<team-name>/TEAM.md` — the team's own mermaid diagram
+  is walked by the orchestrating agent)
+- Edges show explicit data flow between steps
+- Dotted lines (`-.-`) point to where each module is defined on disk
+
+The face and faceless shapes are the same convention used inside TEAM.md
+protocol diagrams. Hexagons are unique to the skill level — they represent
+an opaque team whose internal protocol lives in its own TEAM.md.
 
 Example for a code review skill:
 
 ```mermaid
 graph TD
-    IN[Input: diff] --> S1[Parse diff]
-    S1 --> S2([sec-reviewer])
+    IN[Input: diff] --> S1[Parse diff into per-file hunks]
+    S1 --> S2(sec-reviewer)
     S2 --> S3{{quality-arch-review}}
-    S3 --> S4([review-synthesizer])
-    S4 --> OUT[Output: review]
+    S3 --> S4(review-synthesizer)
+    S1 --> S4
+    S4 --> OUT[Response]
 
     S2 -.- P2["~/.faces/catalog/sec-reviewer/FACE.md"]
     S3 -.- P3["~/.faces/teams/quality-arch-review/TEAM.md"]
     S4 -.- P4["~/.faces/catalog/review-synthesizer/FACE.md"]
 ```
 
-The shape tells the story at a glance: rectangles are faceless plumbing,
+The shape tells the story at a glance: sharp rectangles are faceless plumbing,
 rounded boxes are solo faces, hexagons are teams. Dotted lines point to
 where each module is defined. This diagram should be readable as a standalone
 artifact — someone seeing it on GitHub should understand the skill's
@@ -397,8 +406,9 @@ Use `faces chat:chat <alias> -m "<prompt>"` or reference via `${<alias>}`.
 
 **Team:** `<team-name>` — <why this team>
 
-Run this step using the protocol defined in
-`~/.faces/teams/<team-name>/TEAM.md`.
+Run this step by reading `~/.faces/teams/<team-name>/TEAM.md` and walking the
+mermaid protocol diagram: call faces for `()` nodes, execute instructions for
+`[]` nodes, evaluate conditions for `{}` nodes, pass outputs along edges.
 
 <instructions — how to feed input, what to do with output>
 ```
@@ -437,12 +447,12 @@ Queued section for source material.
 ## Circuit
 
 ```mermaid
-<circuit diagram using the notation above — rectangles, rounded boxes, hexagons>
+<circuit diagram: [faceless] sharp rectangles, (solo face) rounded rectangles, {{team}} hexagons>
 ```
 ```
 
 **The circuit diagram is mandatory in every manyfaced SKILL.md you produce.**
-Use the same notation: `[faceless]`, `([solo face])`, `{{team}}`, dotted lines
+Use the same notation: `[faceless]`, `(solo face)`, `{{team}}`, dotted lines
 to FACE.md/TEAM.md paths. Every manyfaced skill published to GitHub should be
 visually parseable from its circuit diagram alone. This is a standard — all
 manyfaced skills use the same diagram format so they can be rendered, compared,
@@ -473,7 +483,7 @@ checklist. Fix any issues before proceeding.
 
 - [ ] **Name:** directory and skill name both use `manyfaced-` prefix
 - [ ] **Circuit diagram:** present after Setup, uses correct notation
-      (`[faceless]`, `([solo face])`, `{{team}}`), dotted lines to paths
+      (`[faceless]`, `(solo face)`, `{{team}}`), dotted lines to paths
 - [ ] **Setup table:** lists all faces and teams with recipe paths
 - [ ] **Every face referenced exists:** either in `~/.faces/catalog/` or
       created during this session
