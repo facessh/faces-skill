@@ -1,6 +1,6 @@
 # OAuth — Connect ChatGPT (connect plan only)
 
-Connect-plan users can link their own ChatGPT Plus/Pro account so inference routes through their subscription at $0 cost.
+Connect-plan users can link their own ChatGPT Plus/Pro account so inference and compilation route through their subscription at $0 cost.
 
 **The human must approve once in their browser. After that, tokens are stored server-side and the agent never asks again.**
 
@@ -23,4 +23,40 @@ faces auth:disconnect openai
 
 **Tasking the human:** if `auth:connections` returns `[]`, tell the human: *"Run `faces auth:connect openai` in your terminal, or open the authorize URL in your browser and approve access. I'll detect it automatically."*
 
-Once connected, OAuth routing is transparent — no flag needed on inference commands. Requests to gpt-5.x models via `chat:responses` route through the user's ChatGPT subscription automatically. Fallback to system key happens silently if the token is invalid.
+Once connected, OAuth routing is transparent — no flag needed on inference commands. Requests to gpt-5.x models route through the user's ChatGPT subscription automatically.
+
+## Fallback behavior (Connect plan only)
+
+All OAuth and fallback settings (`api_fallback`, `--oauth-only`) apply only to Connect plan users with a linked ChatGPT account. Free plan users do not route through OAuth and are unaffected.
+
+By default, `api_fallback` is `false` — if OAuth fails (token revoked, model unsupported, rate limit), the request returns a **422** error instead of silently falling back to paid system keys.
+
+The 422 response includes:
+- `error: "oauth_rejected"` — stable code
+- `fallback_available: true/false` — whether the user has credit balance to fall back on
+- `detail` — human-readable explanation
+
+**To enable paid fallback:**
+```bash
+faces account:preferences api_fallback true
+```
+
+**Per-request override:**
+```bash
+faces chat:chat alice -m "hello" --oauth-only    # force OAuth, no fallback (even if api_fallback is true)
+```
+
+The `--oauth-only` flag is available on `chat:chat`, `chat:messages`, `chat:responses`, `compile:thread:create`, and `compile:thread:message`.
+
+## Connect plan onboarding
+
+A new Connect user who hasn't linked OAuth will get 422 errors on compile and chat until they either:
+1. Link their OpenAI account: `faces auth:connect openai`
+2. Enable paid fallback: `faces account:preferences api_fallback true`
+3. Pass `--oauth-only` explicitly (to diagnose which requests use OAuth)
+
+The recommended onboarding path is to link OAuth first, then compile.
+
+## Supported OAuth models
+
+Current models supported via ChatGPT OAuth: `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.3-codex`, `gpt-5.2`.

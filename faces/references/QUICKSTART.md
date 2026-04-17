@@ -46,7 +46,7 @@ Ask which plan via AskUserQuestion:
 >
 > A) **Free** — $5 initial spend (added as API credits), pay per token
 >    with a 5% markup. Good for trying it out.
-> B) **Connect ($17/month)** — 100k compile tokens/month. If you have
+> B) **Connect ($17/month)** — compile via your ChatGPT subscription (free, unlimited). If you have
 >    ChatGPT Plus or Pro, link it for free gpt-5.x inference.
 
 Then register with the chosen plan:
@@ -82,7 +82,7 @@ Start by creating the Face with basic demographic attributes. These anchor the p
 
 ```bash
 faces face:create --name "Alice Smith" --alias alice \
-  --default-model gpt-5-nano \
+  --default-model gpt-5.4-mini \
   --attr gender=female --attr age=29 \
   --attr location="Brooklyn, NY" \
   --attr occupation="product designer" \
@@ -155,7 +155,7 @@ Poll status: `faces compile:thread:get THREAD_ID --json | jq '{prepare_status, c
 `chat:chat` auto-routes to the correct API based on model provider. If a `--default-model` was set on the face, no `--llm` flag is needed.
 
 ```bash
-# Uses default model (gpt-5-nano set in step 3)
+# Uses default model (gpt-5.4-mini set in step 3)
 faces chat:chat alice -m "What matters most to you?"
 
 # Override with a specific model

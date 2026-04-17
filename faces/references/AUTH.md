@@ -16,7 +16,7 @@ faces auth:register \
   --username alice \
   --json
 
-# Connect plan ($17/month, 100k compile tokens, ChatGPT passthrough)
+# Connect plan ($17/month, OAuth compilation, ChatGPT passthrough)
 faces auth:register \
   --email user@example.com \
   --password 'SecurePass123!' \
@@ -123,9 +123,10 @@ API keys support optional restrictions:
 
 ### Connect ($17/month)
 
-- **Compilation:** 100,000 tokens/month included. Same extraction cost structure as free — the quota is measured in tokens consumed during compilation, not source tokens.
-- **Inference:** Charged per token with 5% markup, same as free — **except** for OpenAI gpt-5.x models when the user has linked their ChatGPT Plus/Pro subscription via `faces auth:connect openai`. Those requests route through the user's own OpenAI Codex subscription at no additional cost (no markup, no per-token charge from Faces).
-- **ChatGPT passthrough:** Connect-plan users with a linked ChatGPT account get free inference on gpt-5.x models via `chat:responses`. See [OAUTH.md](OAUTH.md) for setup.
+- **Compilation:** Routes through the user's linked ChatGPT OAuth connection (free, unlimited). No compile quota for Connect users.
+- **Inference:** Charged per token with 5% markup, same as free — **except** for OpenAI gpt-5.x models when the user has linked their ChatGPT Plus/Pro subscription via `faces auth:connect openai`. Those requests route through the user's own OpenAI subscription at no additional cost (no markup, no per-token charge from Faces).
+- **ChatGPT passthrough:** Connect-plan users with a linked ChatGPT account get free inference and compilation on supported gpt-5.x models. See [OAUTH.md](OAUTH.md) for setup and supported models.
+- **Fallback:** By default, OAuth failures return 422 errors (no silent fallback to paid keys). Enable fallback with `faces account:preferences api_fallback true`.
 
 ### Checking the current plan
 
@@ -158,6 +159,23 @@ Credentials are stored in `~/.faces/config.json`. The CLI reads from there autom
 |---|---|
 | `FACES_TOKEN` | JWT authentication token |
 | `FACES_API_KEY` | API key authentication |
+
+## Account preferences
+
+Server-side settings stored on the user's account:
+
+```bash
+faces account:preferences                            # view current
+faces account:preferences default_model gpt-5.4      # set default model for new faces
+faces account:preferences api_fallback true           # allow paid fallback when OAuth fails
+```
+
+| Key | Values | Default | Effect |
+|---|---|---|---|
+| `api_fallback` | `true` / `false` | `false` | When false, OAuth failures return 422 instead of falling back to paid system keys |
+| `default_model` | any valid model | `gpt-5.4` | Model inherited by new faces that don't specify `--default-model` |
+
+Note: these are server-side preferences (not local config). They persist across devices and sessions.
 
 ## Refreshing a token
 

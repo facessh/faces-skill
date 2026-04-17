@@ -170,7 +170,9 @@ Use `--kind document` for solo speakers.
 faces chat:chat alias -m "message"
 ```
 
-Auto-routes by model provider. Override: `--llm MODEL`.
+Auto-routes by model provider (including backend auto-routing for gpt-5.x models). Override: `--llm MODEL`.
+Connect plan users: add `--oauth-only` to prevent paid fallback.
+In `--json` mode, response includes `_meta` with `provider`, `cost_usd`, and `routed_endpoint`.
 Reference other faces inline: `${other-alias}` → [references/TEMPLATES.md](references/TEMPLATES.md).
 
 ### 4. Compare & compose
@@ -182,6 +184,35 @@ faces face:create --alias new --formula "alice | bob"
 ```
 
 Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
+
+### 5. Backup & restore
+
+Snapshot all faces and source material for migration:
+```bash
+faces catalog:backup
+# → ~/.faces/backups/2026-04-17T12-00-00-000Z.json
+```
+
+Restore from a backup (defaults to most recent):
+```bash
+faces catalog:restore                    # restore faces + source material
+faces catalog:restore --compile          # restore then compile all
+faces catalog:restore /path/to/file.json # specific backup file
+```
+
+Compile all outstanding (uncompiled) docs and threads:
+```bash
+faces compile:all
+```
+
+### 6. Account preferences
+
+View or update server-side preferences:
+```bash
+faces account:preferences                            # show current
+faces account:preferences default_model gpt-5.4      # set default model for new faces
+faces account:preferences api_fallback true           # allow paid fallback when OAuth fails
+```
 
 ## Important: never run `config:clear`
 
@@ -196,6 +227,7 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 | status "transcribing" | Audio/video transcription in progress — poll with `compile:thread:get ID --json` |
 | status "preparing" | Compilation in progress — poll with `compile:doc:get ID --json` or `compile:thread:get ID --json` |
 | `402` insufficient credits | Check balance: `faces billing:balance --json`. Top up: `faces billing:topup --amount <USD>` (min $1). If no payment method on file: `faces billing:card-setup` first. See [BILLING.md](references/BILLING.md) |
+| `422 oauth_rejected` | Connect plan only: OAuth request failed and paid fallback is disabled. Enable fallback: `faces account:preferences api_fallback true`. If no credits: `faces billing:topup` first. See [OAUTH.md](references/OAUTH.md) |
 | `422` on thread import | Retry with `--type document` |
 | Bad extraction results | Pause with `compile:thread:pause ID` or `compile:doc:pause ID`, review what was extracted, then either resume with `compile:*:make ID` or wipe and restart with `compile:*:reset ID` (keeps source content, removes extraction) |
 
@@ -210,8 +242,10 @@ Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 
 ```
 ~/.faces/
+  config.json           # credentials, base_url, local settings
   catalog.json          # auto-generated index
   catalog/<alias>/      # individual FACE.md files
+  backups/              # timestamped JSON backup snapshots
   teams/<team-name>/    # TEAM.md files (collaboration protocols)
   skills/              # shared skills (facechat, etc.)
 ```

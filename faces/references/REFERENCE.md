@@ -22,9 +22,9 @@ faces face:diff         --face ALIAS  --face ALIAS  [--face ALIAS]...
 faces face:neighbors    <alias>  [--k N]  [--component face|beta|delta|epsilon]  [--direction nearest|furthest]
 
 faces chat:chat         <face_alias>  -m MSG  [--llm MODEL]  [--system]  [--stream]
-                        [--max-tokens N]  [--temperature F]  [--file PATH]  [--responses]
-faces chat:messages     <face@model | model>  -m MSG  [--system]  [--stream]  [--max-tokens N]
-faces chat:responses    <face@model | model>  -m MSG  [--instructions]  [--stream]
+                        [--max-tokens N]  [--temperature F]  [--file PATH]  [--responses]  [--oauth-only]
+faces chat:messages     <face@model | model>  -m MSG  [--system]  [--stream]  [--max-tokens N]  [--oauth-only]
+faces chat:responses    <face@model | model>  -m MSG  [--instructions]  [--stream]  [--oauth-only]
 
 faces compile:import       <alias>  --url YOUTUBE_URL  [--type document|thread]  [--perspective first-person|third-person]  [--face-speaker LABEL]  [--no-wait]
 faces compile:upload       <alias>  --file PATH  [--kind document|thread]  [--perspective first-person|third-person]  [--face-speaker NAME]  [--no-wait]
@@ -39,11 +39,11 @@ faces compile:doc:get      <doc_id>
 faces compile:doc:edit     <doc_id>  [--label]  [--content TEXT | --file PATH]  [--perspective first-person|third-person]
 faces compile:doc:delete   <doc_id>
 
-faces compile:thread:create   <alias>  [--label]
+faces compile:thread:create   <alias>  [--label]  [--oauth-only]
 faces compile:thread:list     <alias>
 faces compile:thread:get      <thread_id>
 faces compile:thread:edit     <thread_id>  [--label TEXT]  [--face-speaker NAME]
-faces compile:thread:message  <thread_id>  -m MSG
+faces compile:thread:message  <thread_id>  -m MSG  [--oauth-only]
 faces compile:thread:make     <thread_id>  [--timeout N]  [--no-wait]
 faces compile:thread:pause    <thread_id>
 faces compile:thread:reset    <thread_id>
@@ -52,7 +52,11 @@ faces compile:thread:delete   <thread_id>  [--yes]
 
 faces catalog:doctor      [--fix]  [--generate]
 faces catalog:list
+faces catalog:backup
+faces catalog:restore     [FILE]  [--compile]
 faces catalog:manyfaced   [--skill NAME]  [--install NAME --skills-dir PATH]  [--refresh]
+
+faces compile:all         [--timeout N]
 
 faces keys:create   --name  [--expires-days N]  [--budget F]  [--face ALIAS]...  [--model NAME]...
 faces keys:list
@@ -69,6 +73,7 @@ faces billing:card-setup
 faces billing:llm-costs  [--provider openai|anthropic|...]
 
 faces account:state
+faces account:preferences [KEY] [VALUE]
 
 faces config:set    <key> <value>
 faces config:show
@@ -77,12 +82,21 @@ faces config:clear  [--yes]
 
 ## Default model (`--default-model`)
 
-The `--default-model` flag on `face:create` and `face:update` sets the LLM used when no `--llm` override is provided to `chat:chat`. Without a default model, `chat:chat` requires `--llm` on every call.
+The `--default-model` flag on `face:create` and `face:update` sets the LLM used when no `--llm` override is provided to `chat:chat`. Without a default model, the face inherits the user's account-level default model (set via `account:preferences`).
 
 ```bash
-faces face:create --name "Ada" --alias ada --default-model gpt-5-nano
-faces chat:chat ada -m "hello"    # uses gpt-5-nano automatically
+faces face:create --name "Ada" --alias ada --default-model gpt-5.4-mini
+faces chat:chat ada -m "hello"    # uses gpt-5.4-mini automatically
 ```
+
+The user's account default model can be viewed and changed with:
+
+```bash
+faces account:preferences                            # show current preferences
+faces account:preferences default_model gpt-5.4      # set default model
+```
+
+New faces inherit the account default model at creation time (one-time copy, not a live link). Changing the account default does not update existing faces.
 
 ## Chat auto-routing
 
@@ -92,7 +106,31 @@ faces chat:chat ada -m "hello"    # uses gpt-5-nano automatically
 - All other models → OpenAI Chat Completions API (`/v1/chat/completions`)
 - `--responses` flag → OpenAI Responses API (`/v1/responses`)
 
+The backend may auto-route certain models (e.g. `gpt-5.4`) from Chat Completions to the Responses API internally. The CLI detects this via the `X-Faces-Routed-Endpoint` response header and parses the response body in the correct format automatically. In `--json` mode, the response includes a `_meta` block with `provider`, `cost_usd`, and `routed_endpoint` fields.
+
 `chat:messages` and `chat:responses` are still available for direct endpoint access.
+
+## OAuth-only mode (`--oauth-only`) — Connect plan only
+
+The `--oauth-only` flag and `api_fallback` preference only apply to **Connect plan** users who have linked their ChatGPT account via `faces auth:connect openai`. Free plan users do not use OAuth and these settings have no effect for them.
+
+The `--oauth-only` flag prevents fallback to paid system keys. When set, requests that fail OAuth return a 422 error instead of silently falling back to credits. Available on `chat:chat`, `chat:messages`, `chat:responses`, `compile:thread:create`, and `compile:thread:message`.
+
+The account-level equivalent is the `api_fallback` preference. When `api_fallback` is `false` (default for Connect plan), all requests behave as if `--oauth-only` is set — OAuth failures return 422 instead of falling back to paid keys. Set it to `true` to allow automatic paid fallback when OAuth fails.
+
+```bash
+faces account:preferences api_fallback false    # default: no fallback (Connect plan)
+faces account:preferences api_fallback true     # allow paid fallback when OAuth fails
+```
+
+## Account preferences
+
+Server-side preferences stored on the user's account. Viewed and modified with `account:preferences`:
+
+| Key | Values | Default | Effect |
+|---|---|---|---|
+| `api_fallback` | `true` / `false` | `false` | When false, OAuth failures return 422 instead of falling back to paid system keys |
+| `default_model` | any valid model | `gpt-5.4` | Model inherited by new faces that don't specify `--default-model` |
 
 ## Compiling documents (`compile:doc`)
 
@@ -131,7 +169,10 @@ The CLI maintains a local catalog at `~/.faces/catalog/` with a `FACE.md` file p
 - `faces catalog:doctor` — diagnose missing, stale, or orphaned catalog entries
 - `faces catalog:doctor --fix` — rebuild catalog from API
 - `faces catalog:doctor --generate` — fix + generate descriptions via LLM
+- `faces catalog:backup` — snapshot all faces, documents, and threads to `~/.faces/backups/<timestamp>.json`
+- `faces catalog:restore [FILE]` — restore faces and source material from a backup (defaults to most recent). `--compile` runs `compile:all` after upload.
 - `faces catalog:list` — print catalog contents
+- `faces compile:all` — compile all uncompiled documents and threads across all faces (one at a time with progress)
 - `faces config:set catalog false` — disable catalog management
 - `faces config:set catalog_model gpt-5-nano` — set the model used for description generation
 

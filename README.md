@@ -69,7 +69,7 @@ You can register manually at the [faces.sh](https://faces.sh/) website, or via t
 # Free plan ($5 activation, pay-per-token)
 faces auth:register --email you@example.com --password 'your-password' --username your-username
 
-# Connect plan ($17/month, 100k compile tokens, ChatGPT passthrough)
+# Connect plan ($17/month, OAuth compilation, ChatGPT passthrough)
 faces auth:register --email you@example.com --password 'your-password' --username your-username --plan connect
 ```
 

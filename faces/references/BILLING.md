@@ -50,7 +50,7 @@ Opens a Stripe Checkout URL to upgrade to the Connect plan.
 faces billing:quota --json
 ```
 
-Shows compile token quota and per-face stats.
+Shows compile token quota and per-face stats. Connect plan users compile via OAuth (free, unlimited) — this quota is still tracked but is less relevant for Connect users.
 
 ## View LLM pricing
 
@@ -84,7 +84,13 @@ Aggregated usage analytics. Group by `api_key`, `model`, `llm`, or `date`.
 **402 during compilation:** Balance is empty. Run `faces billing:balance --json`
 to confirm, then `faces billing:topup --amount <USD>` to add credits and retry.
 
-**Connect plan users:** The Connect plan ($17/month) includes 100k compile
-tokens. Check remaining allowance with `faces billing:quota --json`.
-Chat via ChatGPT passthrough (GPT models) is free on Connect — no credit
-cost for chat messages routed through your ChatGPT subscription.
+**422 oauth_rejected:** OAuth request failed and fallback is disabled. Enable
+fallback: `faces account:preferences api_fallback true`. If no credits, run
+`faces billing:topup` first. See [OAUTH.md](OAUTH.md) for details.
+
+**Connect plan users:** The Connect plan ($17/month) compiles via OAuth (free,
+unlimited). Chat via ChatGPT passthrough (GPT models) is also free on Connect —
+no credit cost for requests routed through your ChatGPT subscription. If OAuth
+is not linked, compile and chat will fail with 422 until you either link OpenAI
+(`faces auth:connect openai`) or enable paid fallback
+(`faces account:preferences api_fallback true`).
