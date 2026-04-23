@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
-SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
-PARENT_DIR="$(dirname "$SKILL_DIR")"
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+SKILLS_SRC="$REPO_DIR/skills"
+PARENT_DIR="$(dirname "$REPO_DIR")"
 
 # Clean up stale symlinks from previous versions
 STALE_LINKS=("face")
@@ -12,7 +13,7 @@ for old in "${STALE_LINKS[@]}"; do
   fi
 done
 
-for dir in "$SKILL_DIR"/*/; do
+for dir in "$SKILLS_SRC"/*/; do
   [ -f "$dir/SKILL.md" ] || continue
   name="$(basename "$dir")"
   ln -sfn "$dir" "$PARENT_DIR/$name"

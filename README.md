@@ -21,20 +21,28 @@ The result is a face that specializes an LLM with perspective, coherence, and nu
 - **Agent skill authors** — who want to give their skills cognitive depth instead of a generic voice
 - **Teams** — who want to build a catalog of reusable faces that compound across projects
 
-## Quickstart (Agent Install)
+## Quick Start
 
-Paste the following into the chat with your agent:
+### Option 1: One-liner (Claude Code, Cursor, Gemini CLI)
 
-Use this for **Claude Code**:
+```bash
+npx skills add faces-sh/faces-skill
+```
+
+This installs the skills automatically. In Claude Code, restart the session (`/exit` then relaunch) so the slash commands load.
+
+### Option 2: Paste into your agent
+
+For **Claude Code**:
 
 ```
 Please install and setup Faces:
-1. clone https://github.com/faces-sh/faces-skill.git into ~/.claude/skills/faces-skill then inspect the setup script and run it if it looks safe
+1. run: npx skills add faces-sh/faces-skill
 2. ask if I already have a Faces account, and if so walk me through getting you access, else tell me about account options and help me get one
 3. tell me about the main Faces skills - /facemake, /facechat, /faceteam, /manyface - then tell me to exit and restart Claude Code so the new slash commands take effect (you cannot restart yourself — I need to type /exit and relaunch)
 ```
 
-Use this for **OpenClaw**:
+For **OpenClaw**:
 
 ```
 Please install Faces:
@@ -81,16 +89,18 @@ faces billing:balance --json | jq '.is_active'
 
 ### Step 3: Install the skill bundle
 
+**Recommended:**
+```bash
+npx skills add faces-sh/faces-skill
+```
+
+**Or manual clone:**
 ```bash
 git clone --depth 1 https://github.com/faces-sh/faces-skill.git ~/.claude/skills/faces-skill
-```
-
-Then run the setup script (it symlinks each skill into `~/.claude/skills/` so
-Claude Code discovers them):
-
-```bash
 cd ~/.claude/skills/faces-skill && ./setup
 ```
+
+Restart Claude Code (`/exit` then relaunch) so the new slash commands load.
 
 You now have `/facemake`, `/facechat`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
 
