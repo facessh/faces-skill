@@ -276,26 +276,38 @@ Present your recommended protocol using AskUserQuestion:
 > B) I'd prefer a different one (tell me which)
 > C) Explain the other options so I can compare
 
-### Step 4: Write the TEAM.md
+### Step 4: Create the team and write TEAM.md
+
+First create the team on the server, then write the local TEAM.md:
 
 ```bash
+# Create team on server
+TEAM=$(faces team:create --name "<team-name>" --description "<what this team does>" --tag team:<category> --json)
+TEAM_ID=$(echo "$TEAM" | jq -r '.id')
+
+# Add members
+faces team:add $TEAM_ID --face alias-1 --face alias-2 --face alias-3
+
+# Write TEAM.md locally
 mkdir -p ~/.faces/teams/<team-name>
 cat > ~/.faces/teams/<team-name>/TEAM.md << 'TEAM'
 <full TEAM.md content>
 TEAM
+
+# Sync protocol to server
+faces team:update $TEAM_ID --protocol-file ~/.faces/teams/<team-name>/TEAM.md
 ```
 
-TEAM.md format:
+**TEAM.md format** — deterministic: YAML frontmatter + mermaid body.
+The frontmatter holds structured metadata. Everything after the closing `---` is the protocol (mermaid diagram). This format syncs bidirectionally with the server.
 
 ```markdown
 ---
 name: <team-name>
 description: <what this team does>
-faces: [alias-1, alias-2, alias-3]
-max_rounds: 3
+tags: [team:<category>, <other-tags>]
+members: [alias-1, alias-2, alias-3]
 ---
-
-## Protocol
 
 ```mermaid
 <flowchart using actual face aliases as node labels — this IS the execution
@@ -303,18 +315,6 @@ spec. Any agent can walk this graph mechanically: call faces for () nodes,
 execute instructions for [] nodes, evaluate conditions for {} nodes, pass
 outputs along edges.>
 ```
-
-## Roles
-
-| Face | Role | Brings |
-|------|------|--------|
-| alias-1 | <role> | <what perspective they add that others can't> |
-| alias-2 | <role> | <what perspective they add that others can't> |
-| alias-3 | <role> | <what perspective they add that others can't> |
-
-## Notes
-
-<casting rationale, team dynamics, where the productive tension is>
 ```
 
 **The mermaid diagram is the entire execution spec.** There is no separate

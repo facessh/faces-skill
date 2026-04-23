@@ -10,16 +10,21 @@ faces auth:connect      <provider>  [--manual]
 faces auth:disconnect   <provider>
 faces auth:connections
 
-faces face:create       --name  --alias  [--default-model MODEL]  [--description TEXT]  [--formula EXPR | --attr KEY=VALUE... --tool NAME...]
-faces face:list
+faces face:create       --name  --alias  [--default-model MODEL]  [--description TEXT]  [--tag TAG...]  [--formula EXPR | --attr KEY=VALUE... --tool NAME...]
+faces face:list         [--tag TAG...]
 faces face:get          <alias>
 faces face:attributes
-faces face:update       <alias>  [--name]  [--default-model MODEL]  [--description TEXT]  [--formula EXPR]  [--attr KEY=VALUE]...
+faces face:update       <alias>  [--name]  [--default-model MODEL]  [--description TEXT]  [--tag TAG...]  [--formula EXPR]  [--attr KEY=VALUE]...
 faces face:delete       <alias>  [--yes]
 faces face:stats
 faces face:upload       <alias>  --file PATH  [--kind document|thread]  [--perspective first-person|third-person]  [--face-speaker NAME]
 faces face:diff         --face ALIAS  --face ALIAS  [--face ALIAS]...
 faces face:neighbors    <alias>  [--k N]  [--component face|beta|delta|epsilon]  [--direction nearest|furthest]
+
+faces face:tag:list     <alias>
+faces face:tag:add      <alias>  --tag TAG  [--tag TAG...]
+faces face:tag:set      <alias>  --tag TAG  [--tag TAG...]
+faces face:tag:remove   <alias>  <tag>
 
 faces chat:chat         <face_alias>  -m MSG  [--llm MODEL]  [--system]  [--stream]
                         [--max-tokens N]  [--temperature F]  [--file PATH]  [--responses]  [--oauth-only]
@@ -71,6 +76,20 @@ faces billing:topup      --amount F  [--payment-ref REF]
 faces billing:checkout   [--plan connect]
 faces billing:card-setup
 faces billing:llm-costs  [--provider openai|anthropic|...]
+
+faces team:create       --name  [--description TEXT]  [--protocol TEXT]  [--protocol-file PATH]  [--tag TAG...]
+faces team:list
+faces team:get          <team_id>
+faces team:update       <team_id>  [--name]  [--description TEXT]  [--protocol TEXT]  [--protocol-file PATH]
+faces team:delete       <team_id>  [--yes]
+faces team:members      <team_id>
+faces team:add          <team_id>  --face ALIAS  [--face ALIAS...]
+faces team:remove       <team_id>  <alias>
+
+faces team:tag:list     <team_id>
+faces team:tag:add      <team_id>  --tag TAG  [--tag TAG...]
+faces team:tag:set      <team_id>  --tag TAG  [--tag TAG...]
+faces team:tag:remove   <team_id>  <tag>
 
 faces account:state
 faces account:preferences [KEY] [VALUE]
@@ -132,6 +151,69 @@ Server-side preferences stored on the user's account. Viewed and modified with `
 | `api_fallback` | `true` / `false` | `false` | When false, OAuth failures return 422 instead of falling back to paid system keys |
 | `default_model` | any valid model | `gpt-5.4` | Model inherited by new faces that don't specify `--default-model` |
 
+## Face description (`--description`)
+
+The `--description` flag on `face:create` and `face:update` sets a plain-text bio stored on the server (max 1500 chars). It is also synced to the local FACE.md catalog.
+
+```bash
+faces face:create --name "Ada" --alias ada --description "Theoretical physicist and first-principles thinker"
+faces face:update ada --description "Updated bio"
+```
+
+`catalog:doctor --fix` pulls descriptions from the server. `catalog:doctor --generate` creates descriptions via LLM and syncs them back to the server.
+
+## Face tags (`--tag`)
+
+Lowercase string labels for organization and search. Pattern: `^[a-z0-9][a-z0-9:\-_.]{0,63}$`. Max 32 per face. Use `:` for namespacing (e.g. `client:acme`, `status:active`).
+
+```bash
+# Set tags on create
+faces face:create --name "Ada" --alias ada --tag research --tag physics
+
+# Replace all tags
+faces face:tag:set ada --tag research --tag updated
+
+# Add tags (append, idempotent)
+faces face:tag:add ada --tag new-tag
+
+# Remove a tag
+faces face:tag:remove ada old-tag
+
+# List tags
+faces face:tag:list ada
+
+# Filter face list by tags (AND logic)
+faces face:list --tag research --tag physics
+```
+
+## Teams
+
+Named groups of faces with optional description, protocol (mermaid diagram), and tags.
+
+```bash
+# Create a team
+faces team:create --name "Review Panel" --description "Research critique panel" --tag team:review
+
+# Add faces
+faces team:add TEAM_ID --face alice --face bob
+
+# List teams (personal Guild is filtered out)
+faces team:list
+
+# Set protocol (mermaid diagram)
+faces team:update TEAM_ID --protocol-file workflow.mmd
+
+# Manage members
+faces team:members TEAM_ID
+faces team:remove TEAM_ID alice
+
+# Team tags (same pattern as face tags)
+faces team:tag:add TEAM_ID --tag urgent
+faces team:tag:list TEAM_ID
+```
+
+Teams also have a local TEAM.md representation at `~/.faces/teams/<name>/TEAM.md` with YAML frontmatter (name, description, tags, members as aliases) and the protocol as the markdown body.
+
 ## Compiling documents (`compile:doc`)
 
 `compile:doc` is the recommended one-step command for compiling a document into a face. Pass the face alias as the first argument. It handles create → compile (prepare + sync) automatically with real-time progress:
@@ -167,10 +249,10 @@ Do NOT warn users that components may persist after deletion — they don't.
 The CLI maintains a local catalog at `~/.faces/catalog/` with a `FACE.md` file per face (YAML frontmatter + markdown notes) and a consolidated `~/.faces/catalog.json` index. The catalog is managed automatically on `face:create`, `face:update`, and `face:delete`.
 
 - `faces catalog:doctor` — diagnose missing, stale, or orphaned catalog entries
-- `faces catalog:doctor --fix` — rebuild catalog from API
-- `faces catalog:doctor --generate` — fix + generate descriptions via LLM
-- `faces catalog:backup` — snapshot all faces, documents, and threads to `~/.faces/backups/<timestamp>.json`
-- `faces catalog:restore [FILE]` — restore faces and source material from a backup (defaults to most recent). `--compile` runs `compile:all` after upload.
+- `faces catalog:doctor --fix` — rebuild catalog from API (syncs descriptions from server)
+- `faces catalog:doctor --generate` — fix + generate descriptions via LLM (syncs back to server)
+- `faces catalog:backup` — snapshot all faces (with descriptions, tags), teams, documents, and threads to `~/.faces/backups/<timestamp>.json`
+- `faces catalog:restore [FILE]` — restore faces, tags, teams, and source material from a backup (defaults to most recent). `--compile` runs `compile:all` after upload.
 - `faces catalog:list` — print catalog contents
 - `faces compile:all` — compile all uncompiled documents and threads across all faces (one at a time with progress)
 - `faces config:set catalog false` — disable catalog management

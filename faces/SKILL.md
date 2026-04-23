@@ -66,9 +66,14 @@ Never run `faces config:clear` (wipes everything with no recovery).
 
 ```bash
 faces face:create --name "Name" --alias slug --default-model MODEL \
+  --description "Plain-text bio" \
   --attr gender=male --attr age=34 --attr location="Portland, OR" \
-  --attr occupation="nurse practitioner"
+  --attr occupation="nurse practitioner" \
+  --tag research --tag client:acme
 ```
+
+`--description` is stored on the server (max 1500 chars) and synced to the local catalog.
+`--tag` adds lowercase labels for organization and search (repeatable, max 32 per face).
 
 Common `--attr` keys: gender, age, location, occupation, education_level,
 religion, ethnicity, nationality, marital_status.
@@ -185,9 +190,30 @@ faces face:create --alias new --formula "alice | bob"
 
 Operators: `|` union, `&` intersection, `-` difference, `^` symmetric diff.
 
-### 5. Backup & restore
+### 5. Teams
 
-Snapshot all faces and source material for migration:
+Create named groups of faces with optional description, protocol (mermaid diagram), and tags:
+```bash
+# Create a team
+TEAM=$(faces team:create --name "Review Panel" --description "Research critique" --tag team:review --json)
+TEAM_ID=$(echo "$TEAM" | jq -r '.id')
+
+# Add faces as members
+faces team:add $TEAM_ID --face alice --face bob
+
+# Set a protocol (mermaid workflow diagram)
+faces team:update $TEAM_ID --protocol-file workflow.mmd
+
+# List teams, members
+faces team:list
+faces team:members $TEAM_ID
+```
+
+Teams have a local TEAM.md at `~/.faces/teams/<name>/TEAM.md` with YAML frontmatter (name, description, tags, members) and the protocol as the body.
+
+### 7. Backup & restore
+
+Snapshot all faces, teams, and source material for migration:
 ```bash
 faces catalog:backup
 # → ~/.faces/backups/2026-04-17T12-00-00-000Z.json
@@ -205,7 +231,7 @@ Compile all outstanding (uncompiled) docs and threads:
 faces compile:all
 ```
 
-### 6. Account preferences
+### 8. Account preferences
 
 View or update server-side preferences:
 ```bash
@@ -245,8 +271,8 @@ faces account:preferences api_fallback true           # allow paid fallback when
   config.json           # credentials, base_url, local settings
   catalog.json          # auto-generated index
   catalog/<alias>/      # individual FACE.md files
-  backups/              # timestamped JSON backup snapshots
-  teams/<team-name>/    # TEAM.md files (collaboration protocols)
+  backups/              # timestamped JSON backup snapshots (v2: faces + teams)
+  teams/<team-name>/    # TEAM.md files (frontmatter: name, description, tags, members; body: protocol)
   skills/              # shared skills (facechat, etc.)
 ```
 

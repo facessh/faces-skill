@@ -80,16 +80,18 @@ faces with a collaboration protocol). Check both.
 # Check face first, then team
 faces face:get $ALIAS --json 2>/dev/null
 echo "---TEAM_CHECK---"
+faces team:list --json 2>/dev/null | jq -r '.[] | select(.name == "'$ALIAS'") | .id'
 ls ~/.faces/teams/$ALIAS/TEAM.md 2>/dev/null
 ```
 
 - If face found → single-face chat (see **Chat** section below).
-- If team found → team chat (see **Team Chat** section below).
+- If team found (by name in `team:list` or local TEAM.md) → team chat (see **Team Chat** section below).
 - If both found → face takes priority (teams should have distinct names).
 - If neither found, check for close matches:
 
 ```bash
 cat ~/.faces/catalog.json | jq -r '.[].alias'
+faces team:list --json 2>/dev/null | jq -r '.[].name'
 ls ~/.faces/teams/ 2>/dev/null
 ```
 
