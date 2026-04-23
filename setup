@@ -3,6 +3,15 @@ set -e
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 PARENT_DIR="$(dirname "$SKILL_DIR")"
 
+# Clean up stale symlinks from previous versions
+STALE_LINKS=("face")
+for old in "${STALE_LINKS[@]}"; do
+  if [ -L "$PARENT_DIR/$old" ]; then
+    rm "$PARENT_DIR/$old"
+    echo "Removed stale /$old symlink (renamed to /facemake)"
+  fi
+done
+
 for dir in "$SKILL_DIR"/*/; do
   [ -f "$dir/SKILL.md" ] || continue
   name="$(basename "$dir")"
@@ -10,4 +19,4 @@ for dir in "$SKILL_DIR"/*/; do
   echo "Linked /$name"
 done
 
-echo "Done. Available skills: /faces, /face, /facechat, /faceteam, /manyface"
+echo "Done. Available skills: /faces, /facemake, /facechat, /faceteam, /manyface"

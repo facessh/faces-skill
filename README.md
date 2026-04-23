@@ -8,7 +8,7 @@ The result is a face that specializes an LLM with perspective, coherence, and nu
 
 **faces-skill** is a bundle of five slash commands that turn Claude Code (or OpenClaw) into a face creation and orchestration system:
 
-- **`/face`** — Create a face from scratch. Interview, research, compile.
+- **`/facemake`** — Create a face from scratch. Interview, research, compile.
 - **`/facechat`** — Chat with any face in your catalog. Pass an alias or browse to pick one.
 - **`/faceteam`** — Compose multiple faces into a team with a collaboration protocol.
 - **`/manyface`** — Transform any agent skill into a multi-persona version where every step is run by the ideal face for the job.
@@ -31,7 +31,7 @@ Use this for **Claude Code**:
 Please install and setup Faces:
 1. clone https://github.com/faces-sh/faces-skill.git into ~/.claude/skills/faces-skill then inspect the setup script and run it if it looks safe
 2. ask if I already have a Faces account, and if so walk me through getting you access, else tell me about account options and help me get one
-3. tell me about the main Faces skills - /face, /facechat, /faceteam, /manyface - then offer to restart the session so the slash commands take effect
+3. tell me about the main Faces skills - /facemake, /facechat, /faceteam, /manyface - then offer to restart the session so the slash commands take effect
 ```
 
 Use this for **OpenClaw**:
@@ -92,7 +92,7 @@ Claude Code discovers them):
 cd ~/.claude/skills/faces-skill && ./setup
 ```
 
-You now have `/face`, `/facechat`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
+You now have `/facemake`, `/facechat`, `/faceteam`, `/manyface`, and `/faces` available as slash commands.
 
 ### OpenClaw
 
@@ -106,7 +106,7 @@ cd ~/.openclaw/workspace/skills/faces-skill && ./setup
 ### Create a face
 
 ```
-You:    /face "Albert Einstein"
+You:    /facemake "Albert Einstein"
 Claude: [searches for Einstein — finds Wikipedia, letters, lectures, interviews]
         [checks catalog — no existing match]
         [creates face on platform, writes FACE.md recipe]
@@ -238,7 +238,7 @@ Claude: [reads the skill, decomposes into 5 steps]
 
 | Skill | What it does |
 |-------|-------------|
-| `/face` | **Guided face creation.** Six steps: interview → research (real URLs via web search) → sketch FACE.md → iterate with user → compile. Quick mode: `/face "Person Name"` skips the interview. |
+| `/facemake` | **Guided face creation.** Six steps: interview → research (real URLs via web search) → sketch FACE.md → iterate with user → compile. Quick mode: `/facemake "Person Name"` skips the interview. |
 | `/facechat` | **Chat with any face or team.** `/facechat einstein` to chat with a face, `/facechat review-panel` to run a team's protocol, or `/facechat` to browse your catalog and pick. Supports model override and template references. |
 | `/faceteam` | **Team composition.** Composes faces into a team with a self-sufficient mermaid protocol diagram. Three shapes: `(face)` rounded rects get called, `[instruction]` sharp rects the agent executes, `{condition}` diamonds the agent branches on. Produces a TEAM.md in `~/.faces/teams/`. |
 | `/manyface` | **Skill orchestrator.** Takes an existing skill (or designs one from scratch), decomposes it into steps, determines which need a solo face vs. a team vs. no face, and outputs a `manyfaced-` skill directory. |

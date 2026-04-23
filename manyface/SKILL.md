@@ -198,14 +198,14 @@ For each role in the decomposition, use AskUserQuestion:
 > This step needs [description of what this face brings].
 >
 > A) **Reuse:** `[alias]` from catalog — [description, N compiled sources]
-> B) **Create new face** — I'll run /face for this role
+> B) **Create new face** — I'll run /facemake for this role
 > C) **Create team** — I'll run /faceteam for this step
 > D) **I have someone specific in mind** (tell me who)
 >
 > RECOMMENDATION: Choose A if the existing face fits — compiled faces with
 > real sources beat fresh recipes.
 
-For solo roles, use `/face` (the full guided flow or quick mode). For team
+For solo roles, use `/facemake` (the full guided flow or quick mode). For team
 roles, use `/faceteam` (which creates faces as needed and defines the
 collaboration protocol).
 
@@ -515,7 +515,7 @@ After QA, present the manyfaced skill using AskUserQuestion:
 > C) Show me the full SKILL.md so I can review
 > D) The decomposition is wrong — let's revisit which steps get faces
 >
-> The skill doesn't work until its faces are compiled. Use `/face` to compile
+> The skill doesn't work until its faces are compiled. Use `/facemake` to compile
 > each one, or `/faces` for direct CLI compilation commands.
 
 ## Step 7: Offer to publish
@@ -546,7 +546,7 @@ a path as argument (`/manyface publish manyfaced-code-review`).
 **Skill vs production:** Only include faces that are structural to the skill
 itself — built-in roles that every user of this skill needs. Faces cast for a
 specific use case (the user's production) do NOT go in the catalog. Most skills
-will ship with an empty `catalog/` and instructions to run `/face` for each role.
+will ship with an empty `catalog/` and instructions to run `/facemake` for each role.
 
 1. Create a `README.md` in the skill directory (if missing) explaining what
    the skill does, who it's for, and example output

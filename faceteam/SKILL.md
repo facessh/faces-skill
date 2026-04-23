@@ -6,7 +6,7 @@ description: >
   that requires more than one perspective. Invoke as /faceteam. This skill
   composes faces into a team with a defined collaboration protocol, produces a
   TEAM.md file with a mermaid flowchart diagram showing exactly how the faces
-  interact, and stores it in ~/.faces/teams/. Uses /face to create any new
+  interact, and stores it in ~/.faces/teams/. Uses /facemake to create any new
   faces needed. Trigger when the user says "build me a team", "I need a panel",
   "set up a debate", "create a review board", or describes a task needing
   multiple perspectives in concert.
@@ -151,13 +151,13 @@ For each role, use AskUserQuestion:
 >
 > A) **Reuse existing face:** `[alias]` — [description from catalog]. Already
 >    has [N] compiled sources.
-> B) **Create a new face** — I'll run /face to build one for this role
+> B) **Create a new face** — I'll run /facemake to build one for this role
 > C) **I have someone specific in mind** (tell me who)
 >
 > RECOMMENDATION: Choose A if the existing face fits — a compiled face with
 > real sources beats a fresh recipe.
 
-If creating new faces, run `/face` for each one (the full guided flow or quick
+If creating new faces, run `/facemake` for each one (the full guided flow or quick
 mode as appropriate). The user should approve each cast member before you move
 on.
 
@@ -349,7 +349,7 @@ Use AskUserQuestion:
 ### Step 6: Compile the team's faces
 
 If the user chose A (or comes back after reviewing), compile each face that
-has `compiled_tokens: 0`. For each face, follow the `/face` skill's Step 5
+has `compiled_tokens: 0`. For each face, follow the `/facemake` skill's Step 5
 (compile) flow:
 
 1. Read the face's FACE.md from `~/.faces/catalog/<alias>/FACE.md`

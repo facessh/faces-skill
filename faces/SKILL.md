@@ -259,7 +259,7 @@ faces account:preferences api_fallback true           # allow paid fallback when
 
 ## Related skills
 
-- `/face` — Guided face creation (interview, research, sketch, compile)
+- `/facemake` — Guided face creation (interview, research, sketch, compile)
 - `/facechat` — Chat with any face in your catalog
 - `/faceteam` — Compose faces into teams with collaboration protocols
 - `/manyface` — Transform a skill into a multi-persona version

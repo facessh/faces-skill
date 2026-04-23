@@ -95,7 +95,7 @@ faces team:list --json 2>/dev/null | jq -r '.[].name'
 ls ~/.faces/teams/ 2>/dev/null
 ```
 
-Suggest the closest match or offer to create the face with `/face` or team
+Suggest the closest match or offer to create the face with `/facemake` or team
 with `/faceteam`.
 
 **If no alias provided** (`/facechat`):
@@ -228,6 +228,6 @@ The user can reference prior responses in their follow-up message naturally.
 
 ## Related skills
 
-- `/face` -- Guided face creation
+- `/facemake` -- Guided face creation
 - `/faces` -- Core CLI for all platform operations
 - `/faceteam` -- Compose faces into teams

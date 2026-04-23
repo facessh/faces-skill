@@ -1,15 +1,15 @@
 ---
-name: face
+name: facemake
 description: >
   Use this skill when the user wants to create an AI persona from scratch — a
   digital twin, an archetype, a composite, or a face of a public figure.
-  Invoke as /face "Name" for quick mode (skip interview, go straight to
-  research), or /face with no argument for the full guided flow. This skill
+  Invoke as /facemake "Name" for quick mode (skip interview, go straight to
+  research), or /facemake with no argument for the full guided flow. This skill
   walks through the entire process: interview, research real source material,
   sketch a FACE.md recipe, iterate with the user, compile, and optionally
   Trigger when the user says "create a face", "I need a persona", "make me a
   digital twin", "build a face for", or names a person they want to turn into
-  an AI. Also trigger on /face.
+  an AI. Also trigger on /facemake.
 allowed-tools:
   - Bash
   - Read
@@ -22,7 +22,7 @@ allowed-tools:
   - WebFetch
 ---
 
-# /face — Guided Face Creation
+# /facemake — Guided Face Creation
 
 ## Preamble
 
@@ -110,7 +110,7 @@ real answer comes after the push.
 ### Step 1: Interview
 
 **Quick mode** — user provides a name or role inline:
-`/face "Some Person"` or `/face "skeptical Series A investor"`
+`/facemake "Some Person"` or `/facemake "skeptical Series A investor"`
 
 Skip the interview. Determine if this is a public figure (search for them) or
 an archetype (identify exemplars). Go straight to Step 2.
