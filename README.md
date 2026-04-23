@@ -31,7 +31,7 @@ Use this for **Claude Code**:
 Please install and setup Faces:
 1. clone https://github.com/faces-sh/faces-skill.git into ~/.claude/skills/faces-skill then inspect the setup script and run it if it looks safe
 2. ask if I already have a Faces account, and if so walk me through getting you access, else tell me about account options and help me get one
-3. tell me about the main Faces skills - /facemake, /facechat, /faceteam, /manyface - then offer to restart the session so the slash commands take effect
+3. tell me about the main Faces skills - /facemake, /facechat, /faceteam, /manyface - then tell me to exit and restart Claude Code so the new slash commands take effect (you cannot restart yourself — I need to type /exit and relaunch)
 ```
 
 Use this for **OpenClaw**:
