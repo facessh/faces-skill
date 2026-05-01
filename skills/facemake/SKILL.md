@@ -73,6 +73,44 @@ everything: tone, reasoning, style, content. They determine what comes next. You
 find the actual talks, the actual writings, the actual interviews. The user
 reviews and edits. Then you compile.
 
+## Resolve input
+
+If the user provided an argument (e.g. `/facemake albert-einstein` or `/facemake "Albert Einstein"`), resolve it before starting the flow. If no argument, skip to **Step 1** (full interview mode).
+
+```bash
+INPUT="<user's argument, lowercased>"
+faces face:get "$INPUT" --json 2>/dev/null
+```
+
+**Case 1 — alias exists:** The face already exists. Skip to **Step 4** (iterate on sources) with this face. Tell the user: "You already have a face with alias `<alias>`. Let's work on its source material."
+
+**Case 2 — alias not found, but input has spaces (looks like a name):** Search for a name match:
+
+```bash
+faces face:list --json 2>/dev/null | jq -r '.data[]? | select(.name == "<original input>") | .alias'
+```
+
+- **Name match found:** Ask the user:
+
+  > You have an existing face named "[name]" (alias: `<alias>`). What would you like to do?
+  >
+  > A) Work on this face — add or update source material
+  > B) Create a new, separate face with a different alias
+
+  If A → skip to **Step 4** with the existing alias.
+  If B → continue to **Step 1** (the input becomes the name for a new face).
+
+- **No name match:** Treat the input as the name for a new face. Continue to **Step 1** quick mode.
+
+**Case 3 — alias not found, single word / slug:** Ask the user:
+
+  > I don't have a face with alias "`<input>`". Would you like to:
+  >
+  > A) Create a new face using "`<input>`" as the alias
+  > B) Create a new face using "`<input>`" as the name (I'll suggest an alias)
+
+  Then continue to **Step 1** quick mode with the chosen value.
+
 ## AskUserQuestion Format
 
 **ALWAYS use AskUserQuestion for every question in this skill.** Follow this
@@ -109,11 +147,7 @@ real answer comes after the push.
 
 ### Step 1: Interview
 
-**Quick mode** — user provides a name or role inline:
-`/facemake "Some Person"` or `/facemake "skeptical Series A investor"`
-
-Skip the interview. Determine if this is a public figure (search for them) or
-an archetype (identify exemplars). Go straight to Step 2.
+**Quick mode** — user provided an argument that passed through **Resolve input** and wasn't an existing face. You already know the name or role. Skip the interview — determine if this is a public figure (search for them) or an archetype (identify exemplars). Go straight to Step 2.
 
 **Full mode** — no argument. Ask questions ONE AT A TIME. Wait for the answer
 before asking the next one. Push on vague answers.
