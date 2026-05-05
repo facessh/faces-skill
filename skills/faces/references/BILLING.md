@@ -44,13 +44,13 @@ faces billing:checkout --plan connect
 
 Opens a Stripe Checkout URL to upgrade to the Subscription Connect plan.
 
-## Check compile token usage
+## Check compilation stats
 
 ```bash
-faces billing:quota --json
+faces compile:stats --json
 ```
 
-Shows compile token usage and per-face stats.
+Shows per-face compilation stats (tokens in graph, last synced, etc.).
 
 ## View LLM pricing
 

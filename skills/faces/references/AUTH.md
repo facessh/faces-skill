@@ -130,7 +130,7 @@ API keys support optional restrictions:
 ```bash
 faces billing:subscription --json   # plan, status, period end
 faces billing:balance --json        # credit balance, is_active
-faces billing:quota --json          # compile token usage
+faces compile:stats --json          # per-face compilation stats
 ```
 
 ### Upgrading
